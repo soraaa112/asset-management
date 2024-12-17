@@ -214,10 +214,10 @@
 
 						if ($myData['status_barang'] == "Ditempatkan") {
 							$my1Sql = "SELECT lokasi.nm_lokasi, departemen.nm_departemen FROM penempatan_item as PI
-						LEFT JOIN penempatan ON PI.no_penempatan=penempatan.no_penempatan
-						LEFT JOIN lokasi ON penempatan.kd_lokasi=lokasi.kd_lokasi
-						LEFT JOIN departemen ON lokasi.kd_departemen=departemen.kd_departemen
-						WHERE PI.status_aktif='Yes' AND PI.kd_inventaris='$note'";
+							LEFT JOIN penempatan ON PI.no_penempatan=penempatan.no_penempatan
+							LEFT JOIN lokasi ON penempatan.kd_lokasi=lokasi.kd_lokasi
+							LEFT JOIN departemen ON lokasi.kd_departemen=departemen.kd_departemen
+							WHERE PI.status_aktif='Yes' AND PI.kd_inventaris='$note'";
 							$my1Qry = mysql_query($my1Sql, $koneksidb)  or die("Query 1 salah : " . mysql_error());
 							$my1Data = mysql_fetch_array($my1Qry);
 							$infoLokasi  = $my1Data['nm_lokasi'];
