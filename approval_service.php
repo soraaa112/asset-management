@@ -60,7 +60,7 @@
 				$my2Qry = mysql_query($my2Sql, $koneksidb) or die("Gagal query kembali : " . mysql_error());
 			} else {
 				// Skrip menyimpan Pengembalian
-				$kodeBaru = buatKode7($koneksidb, "approval", "AP");
+				$kodeBaru = buatKode7($koneksidb, "approval", "AS");
 				$my2Sql	= "INSERT INTO approval_service (no_approval, tgl_approval, no_service)
 							VALUES ('$kodeBaru', '$txtTanggal', '$txtKode')";
 				$my2Qry = mysql_query($my2Sql, $koneksidb) or die("Gagal query kembali : " . mysql_error());
@@ -205,7 +205,7 @@
 			$tmpQry = mysql_query($tmpSql, $koneksidb) or die("Gagal Query Tmp" . mysql_error());
 			$nomor = 0;
 			while ($tmpData = mysql_fetch_array($tmpQry)) {
-				$grandTotal  = $tmpData['harga_service'];// harga beli dari tabel pengadaan_item (harga terbaru dari supplier)
+				$grandTotal  = $tmpData['harga_service']; // harga beli dari tabel pengadaan_item (harga terbaru dari supplier)
 				$nomor++;
 			?>
 				<tr>
@@ -222,6 +222,3 @@
 			</tr>
 		</table>
 	</form>
-
-
-	

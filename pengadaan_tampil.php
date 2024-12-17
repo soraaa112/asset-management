@@ -35,9 +35,9 @@
 	}
 
 	# Deklarasi variabel
-	$filterSQL = "";
-	$SQL = "";
-	$SQLPage = "";
+	$filterSQL 	= "";
+	$SQL 		= "";
+	$SQLPage	= "";
 	$bulan		= DATE('m');
 
 	# BACA VARIABEL KATEGORI
@@ -45,18 +45,6 @@
 	$kodeKategori 	= isset($_POST['cmbKategori']) ? $_POST['cmbKategori'] : $kodeKategori;
 	$status 		= isset($_POST['cmbstatusBarang']) ? $_POST['cmbstatusBarang'] : '';
 	$cmbBulan 		= isset($_POST['cmbBulan']) ? $_POST['cmbBulan'] : $bulan;
-
-	if (isset($_POST['btnSave'])) {
-		$id             = $_POST['kode'];
-		$statusBarang   = $status;
-
-		$mySql = "UPDATE pengadaan SET status = '$statusBarang' WHERE no_pengadaan='$id'";
-		$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query Edit Status" . mysql_error());
-		var_dump($myQry['status']);
-
-		echo "<script>alert('Status Barang Berhasil Diupdate')</script>";
-		echo "<meta http-equiv='refresh' content='5; url=?open=Pengadaan-Tampil'>";
-	}
 
 	# PENCARIAN DATA BERDASARKAN FILTER DATA (Kode Type Kamar)
 	if (isset($_POST['btnCari'])) {
@@ -86,7 +74,8 @@
 	$row = 10;
 	$hal = isset($_GET['hal']) ? $_GET['hal'] : 0;
 	if (isset($_POST['btnCari'])) {
-		$pageSql = "SELECT pengadaan.*, kategori.nm_kategori, barang.nm_barang FROM pengadaan
+		$pageSql = "SELECT pengadaan.*, kategori.nm_kategori, barang.nm_barang
+		FROM pengadaan
 		LEFT JOIN pengadaan_item ON pengadaan.no_pengadaan=pengadaan_item.no_pengadaan
 		LEFT JOIN barang ON pengadaan_item.kd_barang=barang.kd_barang
 		LEFT JOIN kategori ON barang.kd_kategori=kategori.kd_kategori
@@ -115,7 +104,7 @@
 			<form style='padding-top:0px !important' action="<?php $_SERVER['PHP_SELF']; ?>" method="post" name="form1" target="_self">
 				<table width="900" border="0" class="table-list">
 					<tr>
-					<td colspan="3" bgcolor="#F5F5F5"><strong>FILTER DATA </strong></td>
+						<td colspan="3" bgcolor="#F5F5F5"><strong>FILTER DATA </strong></td>
 					</tr>
 					<tr>
 						<td width="134"><strong> Bulan </strong></td>
@@ -177,9 +166,9 @@
 					</tr>
 				</thead>
 				<tbody>
-				<?php
+					<?php
 					if (isset($_POST['btnCari'])) {
-						$mySql = "SELECT pengadaan.*, pengadaan.tgl_pengadaan, pengadaan.foto, pengadaan.foto_form, pengadaan.status_approval, petugas.nm_petugas, departemen.nm_departemen, lokasi.nm_lokasi, pengadaan.keterangan, pengadaan.status
+						$mySql = "SELECT pengadaan.no_pengadaan, pengadaan.tgl_pengadaan, pengadaan.foto, pengadaan.foto_form, pengadaan.status_approval, petugas.nm_petugas, departemen.nm_departemen, lokasi.nm_lokasi, pengadaan.keterangan, pengadaan.status
 						FROM pengadaan
 						LEFT JOIN departemen ON pengadaan.kd_departemen=departemen.kd_departemen
 						LEFT JOIN lokasi ON pengadaan.kd_lokasi=lokasi.kd_lokasi
@@ -195,8 +184,7 @@
 						FROM pengadaan
 						LEFT JOIN departemen ON pengadaan.kd_departemen=departemen.kd_departemen
 						LEFT JOIN lokasi ON pengadaan.kd_lokasi=lokasi.kd_lokasi
-						LEFT JOIN petugas ON pengadaan.kd_petugas=petugas.kd_petugas 
-						WHERE month(pengadaan.tgl_pengadaan) = '$bulan'
+						LEFT JOIN petugas ON pengadaan.kd_petugas=petugas.kd_petugas WHERE month(pengadaan.tgl_pengadaan) = '$bulan'
 						ORDER BY pengadaan.no_pengadaan DESC";
 					}
 					$myQry = mysql_query($mySql, $koneksidb)  or die("Query salah : " . mysql_error());

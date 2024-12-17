@@ -46,59 +46,53 @@
 	$status 		= isset($_POST['cmbstatusBarang']) ? $_POST['cmbstatusBarang'] : '';
 	$cmbBulan 		= isset($_POST['cmbBulan']) ? $_POST['cmbBulan'] : $bulan;
 
-	if (isset($_POST['btnSave'])) {
-		$id             = $_POST['kode'];
-		$statusBarang   = $status;
-
-		$mySql = "UPDATE services SET status = '$statusBarang' WHERE no_service='$id'";
-		$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query Edit Status" . mysql_error());
-		var_dump($myQry['status']);
-
-		echo "<script>alert('Status Barang Berhasil Diupdate')</script>";
-		echo "<meta http-equiv='refresh' content='5; url=?open=Service-Tampil'>";
-	}
-
 	# PENCARIAN DATA BERDASARKAN FILTER DATA (Kode Type Kamar)
 	if (isset($_POST['btnCari'])) {
 		if (trim($_POST['cmbBulan']) == "Semua") {
 			if (trim($_POST['cmbKategori']) == "Semua") {
-			//Query #1 (all)
-			$filterSQL   = "";
+				//Query #1 (all)
+				$filterSQL   = "";
 			} else {
-			//Query #2 (filter)
-			$filterSQL   = "WHERE barang.kd_kategori ='$kodeKategori'";
+				//Query #2 (filter)
+				$filterSQL   = "WHERE barang.kd_kategori ='$kodeKategori'";
 			}
 		} else {
 			if (trim($_POST['cmbKategori']) == "Semua") {
-			//Query #1 (all)
-			$filterSQL   = "WHERE month(services.tgl_kirim) = '$cmbBulan'";
+				//Query #1 (all)
+				$filterSQL   = "WHERE month(services.tgl_kirim) = '$cmbBulan'";
 			} else {
-			//Query #2 (filter)
-			$filterSQL   = "WHERE month(services.tgl_kirim) = '$cmbBulan' AND barang.kd_kategori ='$kodeKategori'";
+				//Query #2 (filter)
+				$filterSQL   = "WHERE month(services.tgl_kirim) = '$cmbBulan' AND barang.kd_kategori ='$kodeKategori'";
 			}
 		}
 	} else {
 		//Query #1 (all)
 		$filterSQL   = "";
-}
+	}
 
 	# UNTUK PAGING (PEMBAGIAN HALAMAN)
 	$row = 10;
 	$hal = isset($_GET['hal']) ? $_GET['hal'] : 0;
 	if (isset($_POST['btnCari'])) {
-		$pageSql = "SELECT services.*, kategori.nm_kategori, barang.nm_barang FROM services
-		LEFT JOIN service_item ON services.no_service=service_item.no_service
-		LEFT JOIN barang ON service_item.kd_barang=barang.kd_barang
-		LEFT JOIN kategori ON barang.kd_kategori=kategori.kd_kategori
+		$pageSql = "SELECT * FROM services
+		LEFT JOIN service_item ON services.no_service = service_item.no_service
+		LEFT JOIN barang_inventaris ON service_item.kd_inventaris = barang_inventaris.kd_inventaris
+		LEFT JOIN barang ON barang_inventaris.kd_barang = barang.kd_barang
+		LEFT JOIN kategori ON barang.kd_kategori = kategori.kd_kategori
+		LEFT JOIN petugas ON services.kd_petugas = petugas.kd_petugas
+		LEFT JOIN departemen ON petugas.kd_departemen = departemen.kd_departemen
 		$filterSQL
-		ORDER BY services.tgl_kirim DESC";
+		GROUP BY services.no_service ORDER BY services.no_service DESC";
 	} else {
-		$pageSql = "SELECT services.*, kategori.nm_kategori, barang.nm_barang FROM services
-		LEFT JOIN service_item ON services.no_service=service_item.no_service
-		LEFT JOIN barang ON service_item.kd_barang=barang.kd_barang
-		LEFT JOIN kategori ON barang.kd_kategori=kategori.kd_kategori
+		$pageSql = "SELECT * FROM services
+		LEFT JOIN service_item ON services.no_service = service_item.no_service
+		LEFT JOIN barang_inventaris ON service_item.kd_inventaris = barang_inventaris.kd_inventaris
+		LEFT JOIN barang ON barang_inventaris.kd_barang = barang.kd_barang
+		LEFT JOIN kategori ON barang.kd_kategori = kategori.kd_kategori
+		LEFT JOIN petugas ON services.kd_petugas = petugas.kd_petugas
+		LEFT JOIN departemen ON petugas.kd_departemen = departemen.kd_departemen
 		WHERE month(services.tgl_kirim) = '$bulan'
-		ORDER BY services.tgl_kirim DESC";
+		GROUP BY services.no_service ORDER BY services.no_service DESC";
 	}
 	$pageQry 	= mysql_query($pageSql, $koneksidb) or die("error paging: " . mysql_error());
 	$jml	 	= mysql_num_rows($pageQry);
@@ -106,21 +100,21 @@
 	?>
 	<div class="table-border">
 		<div style="overflow-x:auto;">
-			<h2>DAFTAR SERVIS 
-			<?php if (isset($_SESSION["SES_PETUGAS"])) : ?>
-				<a href="?open=Service-Baru" target="_self"><img style='padding-right:0px !important' src="images/btn_add_data.png" border="0" /></a>
-				<?php endif; ?>	
+			<h2>DAFTAR SERVIS
+				<?php if (isset($_SESSION["SES_PETUGAS"])) : ?>
+					<a href="?open=Service-Baru" target="_self"><img style='padding-right:0px !important' src="images/btn_add_data.png" border="0" /></a>
+				<?php endif; ?>
 			</h2>
 			<form style='padding-top:0px !important' action="<?php $_SERVER['PHP_SELF']; ?>" method="post" name="form1" target="_self">
 				<table width="900" border="0" class="table-list">
 					<tr>
 						<td colspan="3" bgcolor="#F5F5F5"><strong>FILTER DATA </strong></td>
-						</tr>
-						<tr>
-							<td width="134"><strong> Bulan </strong></td>
-							<td width="5"><strong>:</strong></td>
-							<td width="741">
-								<select name="cmbBulan" data-live-search="true" class="selectpicker">
+					</tr>
+					<tr>
+						<td width="134"><strong> Bulan </strong></td>
+						<td width="5"><strong>:</strong></td>
+						<td width="741">
+							<select name="cmbBulan" data-live-search="true" class="selectpicker">
 								<option value="Semua"> Pilih Bulan </option>
 								<option value="01" <?php echo ($cmbBulan == "01") ? "selected" : "" ?>> Januari </option>
 								<option value="02" <?php echo ($cmbBulan == "02") ? "selected" : "" ?>> Februari </option>
@@ -159,7 +153,7 @@
 							</select>
 							<input name="btnCari" type="submit" value=" Tampilkan " />
 						</td>
-						</tr>
+					</tr>
 				</table>
 			</form>
 			<table id="example1" class="table-list" style="width:100%">
@@ -173,7 +167,6 @@
 						<td width="100" bgcolor="#CCCCCC"><strong>Kerusakan</strong></td>
 						<td width="50" bgcolor="#CCCCCC"><strong>Status Approve</strong></td>
 						<td width="50" bgcolor="#CCCCCC"><strong>Status</strong></td>
-						<td width="100" bgcolor="#CCCCCC"><strong>Lokasi</strong></td>
 						<td width="90" align="center" bgcolor="#CCCCCC"><strong>Aksi</strong></td>
 					</tr>
 				</thead>
@@ -181,27 +174,28 @@
 					<?php
 					# Perintah untuk menampilkan Semua Daftar Transaksi pengadaan
 					if (isset($_POST['btnCari'])) {
-					$mySql = "SELECT services.*, service_item.serial_number as sn, service_item.serial_number_baru, supplier.nm_supplier, barang.nm_barang, barang_inventaris.*, service_item.kerusakan,status_approval_service
-					FROM services 
-					LEFT JOIN supplier ON services.kd_supplier=supplier.kd_supplier
-					LEFT JOIN service_item ON services.no_service=service_item.no_service
-					LEFT JOIN barang_inventaris ON service_item.kd_inventaris=barang_inventaris.kd_inventaris
-					LEFT JOIN barang ON barang_inventaris.kd_barang=barang.kd_barang
-					LEFT JOIN petugas ON services.kd_petugas=petugas.kd_petugas
-					$filterSQL
-					GROUP BY services.no_service
-					ORDER BY services.no_service DESC";
+						$mySql = "SELECT services.*, service_item.serial_number as sn, service_item.serial_number_baru, supplier.nm_supplier, barang.nm_barang, barang_inventaris.*, service_item.kerusakan, services.status_approval_service
+						FROM services 
+						LEFT JOIN supplier ON services.kd_supplier=supplier.kd_supplier
+						LEFT JOIN service_item ON services.no_service=service_item.no_service
+						LEFT JOIN barang_inventaris ON service_item.kd_inventaris=barang_inventaris.kd_inventaris
+						LEFT JOIN barang ON barang_inventaris.kd_barang=barang.kd_barang
+						LEFT JOIN petugas ON services.kd_petugas=petugas.kd_petugas
+						$filterSQL
+						GROUP BY services.no_service
+						ORDER BY services.no_service DESC";
 					} else {
-					$mySql = "SELECT services.*, service_item.serial_number as sn, service_item.serial_number_baru, supplier.nm_supplier, barang.nm_barang, 
-					barang_inventaris.*, service_item.kerusakan,status_approval_service
-					FROM services 
-					LEFT JOIN supplier ON services.kd_supplier=supplier.kd_supplier
-					LEFT JOIN service_item ON services.no_service=service_item.no_service
-					LEFT JOIN barang_inventaris ON service_item.kd_inventaris=barang_inventaris.kd_inventaris
-					LEFT JOIN barang ON barang_inventaris.kd_barang=barang.kd_barang
-					LEFT JOIN petugas ON services.kd_petugas=petugas.kd_petugas
-					WHERE month(services.tgl_kirim) = '$bulan'
-					ORDER BY services.no_service DESC";
+						$mySql = "SELECT services.*, service_item.serial_number as sn, service_item.serial_number_baru, supplier.nm_supplier, barang.nm_barang, 
+						barang_inventaris.*, service_item.kerusakan, services.status_approval_service
+						FROM services 
+						LEFT JOIN supplier ON services.kd_supplier=supplier.kd_supplier
+						LEFT JOIN service_item ON services.no_service=service_item.no_service
+						LEFT JOIN barang_inventaris ON service_item.kd_inventaris=barang_inventaris.kd_inventaris
+						LEFT JOIN barang ON barang_inventaris.kd_barang=barang.kd_barang
+						LEFT JOIN petugas ON services.kd_petugas=petugas.kd_petugas
+						WHERE month(services.tgl_kirim) = '$bulan'
+						GROUP BY services.no_service
+						ORDER BY services.no_service DESC";
 					}
 					$myQry = mysql_query($mySql, $koneksidb)  or die("Query salah : " . mysql_error());
 					$nomor = $hal;
@@ -271,14 +265,16 @@
 							<td><?php echo $myData['kerusakan']; ?></td>
 							<td><?php echo $myData['status_approval_service']; ?></td>
 							<td><?php echo $myData['status'] ?></td>
-							<td><?php echo $infoDepartemen; ?></td>
 							<?php if ($myData['status_approval_service'] == 'Belum Approve') { ?>
 								<?php if (isset($_SESSION["SES_PETUGAS"])) { ?>
 									<td>
-									<a type="button" href="?open=Service-Hapus&Kode=<?php echo $Kode; ?>" target="_self" onclick="return confirm('ANDA YAKIN AKAN MENGHAPUS DATA PENGADAAN INI ... ?')" class="btn btn-danger btn-sm" title="Hapus Data">
-											<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+										<a href="?open=Service-Hapus&Kode=<?php echo $Kode; ?>" target="_self" onclick="return confirm('ANDA YAKIN AKAN MENGHAPUS DATA PENGADAAN INI ... ?')" title="Hapus Data">
+											<button class="btn btn-danger btn-sm" title="Hapus Data"><i class="fa fa-trash"></i>
+											</button>
 										</a>
-										<a type="button" href="?open=Service-Edit&Kode=<?php echo $Kode; ?>" target="_self" class="btn btn-warning btn-sm" title="Edit Data"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+										<a href="?open=Service-Edit&Kode=<?php echo $Kode; ?>" target="_self" title="Edit Data">
+											<button class="btn btn-warning btn-sm" title="Edit Data"><i class="fa fa-pencil"></i>
+											</button>
 										</a>
 									</td>
 								<?php } else { ?>
@@ -286,38 +282,39 @@
 										<a type="button" href="?open=Service-Hapus&Kode=<?php echo $Kode; ?>" target="_self" onclick="return confirm('ANDA YAKIN AKAN MENGHAPUS DATA PENGADAAN INI ... ?')" class="btn btn-danger btn-sm" title="Hapus Data">
 											<i class="fa fa-trash"></i></a>
 
-										<a type="button" href="?open=Approval-Service&Kode=<?php echo $Kode; ?>" target="_self" class="btn btn-info btn-sm" title="Approve Data"><i class=" fa fa-check"></i></a>
+										<a type="button" href="?open=Approval-Service&Kode=<?php echo $Kode; ?>" target="_self" class="btn btn-info btn-sm" title="Approve Data"><i class="fa fa-check"></i></a>
 									</td>
 								<?php } ?>
 							<?php } else { ?>
-							<td>
-							<?php if ($myData['status'] == 'DONE' || $myData['status'] == 'CANCEL') : ?>
-									<a href="?open=Service-Hapus&Kode=<?php echo $Kode; ?>" target="_self" onclick="return confirm('ANDA YAKIN AKAN MENGHAPUS DATA SERVICE INI ... ?')">
-										<button class="btn btn-danger btn-sm" title="Hapus Data"><i class="fa fa-trash"></i>
-										</button>
-									</a>
-									<a href="?open=service_cetak.php?Kode=<?php echo $Kode; ?>" target="_blank">
-										<button class="btn btn-success btn-sm" title="Edit Data"><span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-										</button>
-									</a>
-							<?php else : ?>
-									<a href="?open=Service-Hapus&Kode=<?php echo $Kode; ?>" target="_self" onclick="return confirm('ANDA YAKIN AKAN MENGHAPUS DATA SERVICE INI ... ?')">
-										<button class="btn btn-danger btn-sm" title="Hapus Data"><i class="fa fa-trash"></i>
-										</button>
-									</a>
-									<a href="?open=Service-Edit&Kode=<?php echo $Kode; ?>" target="_self">
-										<button class="btn btn-warning btn-sm" title="Edit Data"><i class="fa fa-pencil"></i>
-										</button>
-									</a>
-									<a href="?open=Service-Update-Status&Kode=<?php echo $Kode; ?>" target="_self">
-										<button class="btn btn-primary btn-sm" title="Update Status"><i class="fa fa-check"></i>
-										</button>
-									</a>
-							<?php endif; ?>
-							</td>
+								<td>
+									<?php if ($myData['status'] == 'DONE' || $myData['status'] == 'CANCEL') : ?>
+										<a href="?open=Service-Hapus&Kode=<?php echo $Kode; ?>" target="_self" onclick="return confirm('ANDA YAKIN AKAN MENGHAPUS DATA SERVICE INI ... ?')">
+											<button class="btn btn-danger btn-sm" title="Hapus Data"><i class="fa fa-trash"></i>
+											</button>
+										</a>
+										<a href="?open=service_cetak.php?Kode=<?php echo $Kode; ?>" target="_blank">
+											<button class="btn btn-success btn-sm" title="Edit Data"><span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+											</button>
+										</a>
+									<?php else : ?>
+										<a href="?open=Service-Hapus&Kode=<?php echo $Kode; ?>" target="_self" onclick="return confirm('ANDA YAKIN AKAN MENGHAPUS DATA SERVICE INI ... ?')">
+											<button class="btn btn-danger btn-sm" title="Hapus Data"><i class="fa fa-trash"></i>
+											</button>
+										</a>
+										<a href="?open=Service-Edit&Kode=<?php echo $Kode; ?>" target="_self">
+											<button class="btn btn-warning btn-sm" title="Edit Data"><i class="fa fa-pencil"></i>
+											</button>
+										</a>
+										<a href="?open=Service-Update-Status&Kode=<?php echo $Kode; ?>" target="_self">
+											<button class="btn btn-primary btn-sm" title="Update Status"><i class="fa fa-check"></i>
+											</button>
+										</a>
+									<?php endif; ?>
+								</td>
 						</tr>
-					<?php }} ?>
+				<?php }
+						} ?>
 				</tbody>
 			</table>
 		</div>
-	</div> 
+	</div>

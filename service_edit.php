@@ -73,14 +73,11 @@
 				}
 
 				if (empty($errors) == true) {
-					if (!is_file("$desired_dir/$file_name")) {
-						if (move_uploaded_file($file_tmp, "$desired_dir/$file_name")) {
-							$uploaded_files[] = $file_name; // Simpan nama file yang berhasil diunggah
-						} else {
-							$errors[] = "$file_name: Failed to upload file.";
-						}
-					} else {
-						$errors[] = "$file_name: File already exists in the directory.";
+					$namaFileBaru	= uniqid();
+					$namaFileBaru .= '-';
+					$namaFileBaru .= $file_name;
+					if (move_uploaded_file($file_tmp, "$desired_dir/$namaFileBaru")) {
+						$uploaded_files[] = $namaFileBaru; // Simpan nama file yang berhasil diunggah
 					}
 				} else {
 					print_r($errors);
