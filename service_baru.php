@@ -35,12 +35,11 @@
 		$txtCustomer		= $_POST['txtCustomer'];
 		$tglKirim 			= InggrisTgl($_POST['txtTanggalKirim']);
 		$cmbLokasi			= $_POST['cmbLokasi'];
-		$cmbVendor			= $_POST['cmbVendor'];
 		$txtSnAwal			= $_POST['snAwal'];
-		$errors 			= [];
-		$uploaded_files 	= [];
 		$pesanError			= [];
-		$desired_dir = "user_data";
+		$errors 			= [];
+		$uploaded_files	 	= [];
+		$desired_dir 		= "user_data";
 
 		foreach ($_FILES['files']['tmp_name'] as $key => $tmp_name) {
 			$file_name = $_FILES['files']['name'][$key];
@@ -99,24 +98,19 @@
 			# SIMPAN DATA KE DATABASE
 			# Jika jumlah error pesanError tidak ada
 			$kodeBaru = buatKode7($koneksidb, "services", "SS");
-			$mySql	= "INSERT INTO services (no_service, tgl_kirim, kd_petugas, lokasi, kd_supplier, status, status_approval_service, surat_jalan) 
-					VALUES ('$kodeBaru', '$tglKirim', '$userLogin', '$cmbLokasi', '$cmbVendor', 'IDLE', 'Belum Approve', '$fileName')";
-			$myQry	= mysql_query($mySql, $koneksidb) or die("Gagal query" . mysql_error());
+			$mySql	= "INSERT INTO services (no_service, tgl_kirim, kd_petugas, lokasi, kd_supplier, status, surat_jalan) 
+					VALUES ('$kodeBaru', '$tglKirim', '$userLogin', '$cmbLokasi', '$cmbVendor', 'IDLE', '$fileName')";
+			mysql_query($mySql, $koneksidb) or die("Gagal query service " . mysql_error());
 
 			$itemSql	= "INSERT INTO service_item (no_service, kd_inventaris, kerusakan, harga_service, customer, keterangan, serial_number) 
 			VALUES ('$kodeBaru','$txtKodeInventaris','$txtDeskripsi','$txtHargaService','$txtCustomer','$txtKeterangan', '$txtSnAwal')";
 			mysql_query($itemSql, $koneksidb) or die("Gagal Query Item : " . mysql_error());
-			
-			$mySql = "UPDATE services SET status_approval_service ='Belum Approve' WHERE no_service='$kodeBaru'";
-					mysql_query($mySql, $koneksidb) or die("Gagal Query Edit Status" . mysql_error());
-				
-				}
 
 			// Refresh form
 			echo "<script>alert('Data Service Berhasil Ditambah')</script>";
 			echo "<meta http-equiv='refresh' content='0; url=?open=Service-Tampil'>";
 		}
-
+	}
 
 	if (isset($_POST['btnKembali'])) {
 
@@ -125,7 +119,6 @@
 
 	# TAMPILKAN DATA KE FORM
 	$noTransaksi 	= buatKode7($koneksidb, "services", "SS");
-	
 	?>
 	<SCRIPT language="JavaScript">
 		function submitform() {
