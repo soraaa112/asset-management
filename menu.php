@@ -42,6 +42,7 @@
 					<li><a href="?open=Mutasi-Tampil"><i class="fa fa-circle-o"></i> Transaksi Mutasi</a></li>
 					<li><a href="?open=Peminjaman-Tampil"><i class="fa fa-circle-o"></i> Transaksi Peminjaman</a></li>
 					<li><a href="?open=Service-Tampil"><i class="fa fa-circle-o"></i> Transaksi Service</a></li>
+					<li><a href="?open=Barang-Mati-Tampil"><i class="fa fa-circle-o"></i> Transaksi Barang Mati</a></li>
 				</ul>
 			</li>
 			<li><a href="?open=Stok-Opname"><i class="fa fa-clipboard"></i> <span>Stok Opname</span></a></li>
@@ -129,6 +130,7 @@
 					<li><a href="?open=Mutasi-Tampil"><i class="fa fa-circle-o"></i> Transaksi Mutasi</a></li>
 					<li><a href="?open=Peminjaman-Tampil"><i class="fa fa-circle-o"></i> Transaksi Peminjaman</a></li>
 					<li><a href="?open=Service-Tampil"><i class="fa fa-circle-o"></i> Transaksi Service</a></li>
+					<li><a href="?open=Barang-Mati-Tampil"><i class="fa fa-circle-o"></i> Transaksi Barang Mati</a></li>
 				</ul>
 			</li>
 			<li class="treeview">

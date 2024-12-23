@@ -48,3 +48,8 @@ $statusPengajuan[]  = "Sudah Diterima";
 $approval_service    = array();
 $approval_service[] = "Belum Approve";
 $approval_service[] = "Approve";
+
+# PILIHAN APPROVAL
+$approval_barang_mati    = array();
+$approval_barang_mati[] = "Belum Approve";
+$approval_barang_mati[] = "Approve";

@@ -159,7 +159,6 @@ if ($_GET) {
 			include "cetak_barcode_view.php";
 			break;
 
-
 			# SUPPLIER (PEMASOK)
 		case 'Supplier-Data':
 			if (!file_exists("supplier_data.php")) die("File tidak ditemukan !");
@@ -397,6 +396,32 @@ if ($_GET) {
 		case 'Service-Update-Status':
 			if (!file_exists("service_update_status.php")) die("Empty Main Page!");
 			include "service_update_status.php";
+			break;
+
+			# DATA BARANG MATI
+		case 'Barang-Mati-Baru':
+			if (!file_exists("barang_mati_baru.php")) die("Empty Main Page!");
+			include "barang_mati_baru.php";
+			break;
+		case 'Approval-Barang-Mati':
+			if (!file_exists("approval_barang_mati.php")) die("File tidak ditemukan !");
+			include "approval_barang_mati.php";
+			break;
+		case 'Barang-Mati-Tampil':
+			if (!file_exists("barang_mati_tampil.php")) die("Empty Main Page!");
+			include "barang_mati_tampil.php";
+			break;
+		case 'Barang-Mati-Hapus':
+			if (!file_exists("barang_mati_hapus.php")) die("Empty Main Page!");
+			include "barang_mati_hapus.php";
+			break;
+		case 'Barang-Mati-Edit':
+			if (!file_exists("barang_mati_edit.php")) die("Empty Main Page!");
+			include "barang_mati_edit.php";
+			break;
+		case 'Barang-Mati-Update-Status':
+			if (!file_exists("barang_mati_update_status.php")) die("Empty Main Page!");
+			include "barang_mati_update_status.php";
 			break;
 
 			# DATA PENGADAAN
