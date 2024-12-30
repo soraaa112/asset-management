@@ -56,14 +56,22 @@
 			if (mysql_num_rows($cekQry) >= 1) {
 				// Update informasi pengembalian
 				$my2Sql	= "UPDATE approval_barang_mati SET tgl_approval= '$txtTanggal'
-							WHERE no_barang_mati='$txtKode'";
+						WHERE no_barang_mati='$txtKode'";
 				$my2Qry = mysql_query($my2Sql, $koneksidb) or die("Gagal query kembali : " . mysql_error());
 			} else {
 				// Skrip menyimpan Pengembalian
-				$kodeBaru = buatKode7($koneksidb, "approval", "ABM");
+				$kodeBaru = buatKode7($koneksidb, "approval_barang_mati", "ABM");
 				$my2Sql	= "INSERT INTO approval_barang_mati (no_approval, tgl_approval, no_barang_mati)
 							VALUES ('$kodeBaru', '$txtTanggal', '$txtKode')";
 				$my2Qry = mysql_query($my2Sql, $koneksidb) or die("Gagal query kembali : " . mysql_error());
+			}
+
+			$cekSql = "SELECT * FROM barang_mati WHERE no_barang_mati='$txtKode'";
+			$sql = mysql_query($cekSql, $koneksidb) or die("Gagal Query Tmp : " . mysql_error());
+			while ($myData = mysql_fetch_array($sql)){
+				$kode = $myData['kd_inventaris'];
+				$mySql = "UPDATE barang_inventaris SET status_aktif = 'No' WHERE kd_inventaris='$kode'";
+				mysql_query($mySql, $koneksidb) or die("Gagal Query Edit Status : " . mysql_error());
 			}
 
 			// Konfirmasi

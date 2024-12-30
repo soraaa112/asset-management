@@ -79,7 +79,8 @@
 			} else {
 				$fileName = '';
 			}
-			# SIMPAN DATA KE DATABASE. // Jika tidak menemukan error, simpan data ke database
+			# SIMPAN DATA KE DATABASE. 
+			// Jika tidak menemukan error, simpan data ke database
 			$kodeBarang	= $_POST['textfield'];
 			$mySql	= "INSERT INTO barang (kd_barang, nm_barang, satuan, jumlah, kd_kategori, foto) 
 							VALUES ('$kodeBarang',

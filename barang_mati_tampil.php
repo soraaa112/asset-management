@@ -159,6 +159,7 @@
 					<tr>
 						<td width="15" bgcolor="#CCCCCC"><strong>No</strong></td>
 						<td width="65" bgcolor="#CCCCCC"><strong>Tanggal</strong></td>
+						<td width="80" bgcolor="#CCCCCC"><strong>Kode Inventaris</strong></td>
 						<td width="80" bgcolor="#CCCCCC"><strong>Serial Number</strong></td>
 						<td width="154" bgcolor="#CCCCCC"><strong>Nama Barang</strong></td>
 						<td width="100" bgcolor="#CCCCCC"><strong>Kerusakan</strong></td>
@@ -171,7 +172,7 @@
 					<?php
 					# Perintah untuk menampilkan Semua Daftar Transaksi pengadaan
 					if (isset($_POST['btnCari'])) {
-						$mySql = "SELECT barang_mati.*, barang_mati.serial_number, barang.nm_barang, barang_inventaris.*, barang_mati.kerusakan, barang_mati.status_approval_barang_mati
+						$mySql = "SELECT barang_mati.*, barang_mati.serial_number, barang.nm_barang, barang_inventaris.*, barang_mati.kerusakan, barang_mati.status_approval_barang_mati, barang_mati.kd_inventaris as kode
 						FROM barang_mati 
 						LEFT JOIN barang_inventaris on barang_mati.kd_inventaris=barang_inventaris.kd_inventaris
 						LEFT JOIN barang on barang_inventaris.kd_barang=barang.kd_barang
@@ -180,7 +181,7 @@
 						GROUP BY barang_mati.no_barang_mati
 						ORDER BY barang_mati.no_barang_mati DESC";
 					} else {
-						$mySql = "SELECT barang_mati.*, barang.nm_barang, barang_inventaris.*, barang_mati.serial_number as sn
+						$mySql = "SELECT barang_mati.*, barang.nm_barang, barang_inventaris.*, barang_mati.serial_number as sn, barang_mati.kd_inventaris as kode
 						FROM barang_mati 
 						LEFT JOIN barang_inventaris on barang_mati.kd_inventaris=barang_inventaris.kd_inventaris
 						LEFT JOIN barang on barang_inventaris.kd_barang=barang.kd_barang
@@ -209,6 +210,7 @@
 						<tr bgcolor="<?php echo $warna; ?>">
 							<td><?php echo $nomor; ?>.</td>
 							<td><?php echo IndonesiaTgl($myData['tanggal']); ?></td>
+							<td><?php echo $myData['kode']; ?></td>
 							<td><?php echo $myData['sn']; ?></td>
 							<td><?php echo $myData['nm_barang']; ?></td>
 							<td><?php echo $myData['kerusakan']; ?></td>
