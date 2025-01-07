@@ -39,30 +39,52 @@
 	$SQL 		= "";
 	$SQLPage	= "";
 	$bulan		= DATE('m');
+	$tahun		= DATE('Y');
 
 	# BACA VARIABEL KATEGORI
 	$kodeKategori 	= isset($_GET['kodeKategori']) ? $_GET['kodeKategori'] : 'Semua';
 	$kodeKategori 	= isset($_POST['cmbKategori']) ? $_POST['cmbKategori'] : $kodeKategori;
 	$status 		= isset($_POST['cmbstatusBarang']) ? $_POST['cmbstatusBarang'] : '';
 	$cmbBulan 		= isset($_POST['cmbBulan']) ? $_POST['cmbBulan'] : $bulan;
+	$cmbTahun 		= isset($_POST['cmbTahun']) ? $_POST['cmbTahun'] : $tahun;
 
 	# PENCARIAN DATA BERDASARKAN FILTER DATA (Kode Type Kamar)
 	if (isset($_POST['btnCari'])) {
-		if (trim($_POST['cmbBulan']) == "Semua") {
-			if (trim($_POST['cmbKategori']) == "Semua") {
-				//Query #1 (all)
-				$filterSQL   = "";
+		if (trim($_POST['cmbTahun']) == "Semua") {
+			if (trim($_POST['cmbBulan']) == "Semua") {
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE barang.kd_kategori ='$kodeKategori'";
+				}
 			} else {
-				//Query #2 (filter)
-				$filterSQL   = "WHERE barang.kd_kategori ='$kodeKategori'";
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "WHERE month(pengadaan.tgl_pengadaan) = '$cmbBulan'";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE month(pengadaan.tgl_pengadaan) = '$cmbBulan' AND barang.kd_kategori ='$kodeKategori'";
+				}
 			}
 		} else {
-			if (trim($_POST['cmbKategori']) == "Semua") {
-				//Query #1 (all)
-				$filterSQL   = "WHERE month(pengadaan.tgl_pengadaan) = '$cmbBulan'";
+			if (trim($_POST['cmbBulan']) == "Semua") {
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "WHERE year(pengadaan.tgl_pengadaan) = '$cmbTahun'";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE year(pengadaan.tgl_pengadaan) = '$cmbTahun' AND barang.kd_kategori ='$kodeKategori'";
+				}
 			} else {
-				//Query #2 (filter)
-				$filterSQL   = "WHERE month(pengadaan.tgl_pengadaan) = '$cmbBulan' AND barang.kd_kategori ='$kodeKategori'";
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "WHERE year(pengadaan.tgl_pengadaan) = '$cmbTahun' AND month(pengadaan.tgl_pengadaan) = '$cmbBulan'";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE year(pengadaan.tgl_pengadaan) = '$cmbTahun' AND month(pengadaan.tgl_pengadaan) = '$cmbBulan' AND barang.kd_kategori ='$kodeKategori'";
+				}
 			}
 		}
 	} else {
@@ -87,7 +109,7 @@
 		LEFT JOIN pengadaan_item ON pengadaan.no_pengadaan=pengadaan_item.no_pengadaan
 		LEFT JOIN barang ON pengadaan_item.kd_barang=barang.kd_barang
 		LEFT JOIN kategori ON barang.kd_kategori=kategori.kd_kategori
-		WHERE month(pengadaan.tgl_pengadaan) = '$bulan'
+		WHERE year(pengadaan.tgl_pengadaan) = '$tahun' AND month(pengadaan.tgl_pengadaan) = '$bulan'
 		ORDER BY pengadaan.tgl_pengadaan DESC";
 	}
 	$pageQry 	= mysql_query($pageSql, $koneksidb) or die("error paging: " . mysql_error());
@@ -124,6 +146,18 @@
 								<option value="10" <?php echo ($cmbBulan == "10") ? "selected" : "" ?>> Oktober </option>
 								<option value="11" <?php echo ($cmbBulan == "11") ? "selected" : "" ?>> November </option>
 								<option value="12" <?php echo ($cmbBulan == "12") ? "selected" : "" ?>> Desember </option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td width="134"><strong> Tahun </strong></td>
+						<td width="5"><strong>:</strong></td>
+						<td width="741">
+							<select name="cmbTahun" data-live-search="true" class="selectpicker">
+								<option value="Semua"> Pilih Tahun </option>
+								<?php for ($i = 2023; $i <= $tahun; $i++) : ?>
+									<option value="<?php echo $i ?>" <?php echo ($cmbTahun == "$i") ? "selected" : "" ?>> <?php echo $i ?> </option>
+								<?php endfor; ?>
 							</select>
 						</td>
 					</tr>
@@ -184,7 +218,7 @@
 						FROM pengadaan
 						LEFT JOIN departemen ON pengadaan.kd_departemen=departemen.kd_departemen
 						LEFT JOIN lokasi ON pengadaan.kd_lokasi=lokasi.kd_lokasi
-						LEFT JOIN petugas ON pengadaan.kd_petugas=petugas.kd_petugas WHERE month(pengadaan.tgl_pengadaan) = '$bulan'
+						LEFT JOIN petugas ON pengadaan.kd_petugas=petugas.kd_petugas WHERE year(pengadaan.tgl_pengadaan) = '$tahun' AND month(pengadaan.tgl_pengadaan) = '$bulan'
 						ORDER BY pengadaan.no_pengadaan DESC";
 					}
 					$myQry = mysql_query($mySql, $koneksidb)  or die("Query salah : " . mysql_error());
