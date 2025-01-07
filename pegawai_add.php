@@ -76,7 +76,13 @@
 			}
 			exit;
 		}
-	} // Penutup Tombol Simpan
+	}
+	if (isset($_POST['btnKembali'])) {
+
+		echo "<meta http-equiv='refresh' content='0; url=?open=Pegawai-Data'>";
+	}
+
+	// Penutup Tombol Simpan
 
 	# MASUKKAN DATA DARI FORM KE VARIABEL TEMPORARY (SEMENTARA)
 	$dataKode	= buatKode5($koneksidb, "pegawai", "P");
@@ -86,99 +92,94 @@
 	$dataTelepon = isset($_POST['txtTelepon']) ? $_POST['txtTelepon'] : '';
 	$dataDepartemen	= isset($_POST['cmbDepartemen']) ? $_POST['cmbDepartemen'] : '';
 	?>
-	<form action="<?php $_SERVER['PHP_SELF']; ?>" method="post" name="form1">
-		<table width="100%" cellpadding="2" cellspacing="1" class="table-list">
-			<tr>
-				<th colspan="3">TAMBAH DATA PEGAWAI </th>
-			</tr>
-			<tr>
-				<td width="15%"><b>Kode</b></td>
-				<td width="1%"><b>:</b></td>
-				<td width="84%"><input name="textfield" value="<?php echo $dataKode; ?>" size="26" maxlength="4" readonly="readonly" /></td>
-			</tr>
-			<tr>
-				<td><b>Nama Pegawai </b></td>
-				<td><b>:</b></td>
-				<td><input name="txtNama" value="<?php echo $dataNama; ?>" size="26" maxlength="100" /></td>
-			</tr>
-			<tr>
-				<td><strong>Departemen </strong></td>
-				<td><strong>:</strong></td>
-				<td>
-					<?php if (isset($_SESSION["SES_PETUGAS"]) && ($_SESSION["SES_UNIT"])) { ?>
-						<select name="cmbDepartemen" data-live-search="true" class="selectpicker">
-							<?php
-							$mySql = "SELECT * FROM departemen WHERE nm_departemen='$_SESSION[SES_UNIT]' ORDER BY kd_departemen";
-							$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
-							while ($myData = mysql_fetch_array($myQry)) {
-								if ($kodeDepartemen == $myData['kd_departemen']) {
-									$cek = " selected";
-								} else {
-									$cek = "";
-								}
-								echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
-							}
-							$mySql = "";
-							?>
-						</select>
-					<?php } else { ?>
-						<select name="cmbDepartemen" data-live-search="true" class="selectpicker">
-							<option value="Kosong"> Pilih Departemen </option>
-							<?php
-							$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
-							$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
-							while ($myData = mysql_fetch_array($myQry)) {
-								if ($kodeDepartemen == $myData['kd_departemen']) {
-									$cek = " selected";
-								} else {
-									$cek = "";
-								}
-								echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
-							}
-							$mySql = "";
-							?>
-						</select>
-					<?php } ?>
-				</td>
-			</tr>
-			<tr>
-				<td><b>Kelamin</b></td>
-				<td><b>:</b></td>
-				<td><b>
-						<select name="cmbKelamin" data-live-search="true" class="selectpicker">
-							<option value="Kosong"> Pilih Jenis Kelamin </option>
-							<?php
-							$pilihan	= array("Laki-laki", "Perempuan");
-							foreach ($pilihan as $nilai) {
-								if ($dataKelamin == $nilai) {
-									$cek = " selected";
-								} else {
-									$cek = "";
-								}
-								echo "<option value='$nilai' $cek>$nilai</option>";
-							}
-							?>
-						</select>
-					</b></td>
-			</tr>
-			<tr>
-				<td><b>Alamat Lengkap </b></td>
-				<td><b>:</b></td>
-				<td><textarea name="txtAlamat" cols="28" rows="3"><?php echo $dataAlamat; ?></textarea></td>
-			</tr>
-			<tr>
-				<td><b>No Telepon </b></td>
-				<td><b>:</b></td>
-				<td><input name="txtTelepon" value="<?php echo $dataTelepon; ?>" size="26" maxlength="20" /></td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td><input type="submit" name="btnSimpan" value=" Simpan ">
-					<a href="?open=Pegawai-Data">
-						<input type="button" name="" value=" Kembali " />
-					</a>
-				</td>
-			</tr>
-		</table>
-	</form>
+	<SCRIPT language="JavaScript">
+		function submitform() {
+			document.form1.submit();
+		}
+	</SCRIPT>
+	<div class="table-border">
+		<h2>TAMBAH DATA PEGAWAI</h2>
+		<form action="<?php $_SERVER['PHP_SELF']; ?>" method="post" name="form1" target="_self" enctype="multipart/form-data">
+			<div class="row">
+				<label for="textfield" class="col-lg-2 control-label">Kode</label>
+				<div class="col-lg-4">
+					<input type="text" class="form-control" name="textfield" id="textfield" value="<?php echo $dataKode; ?>" autocomplete="off">
+				</div>
+				<label for="txtAlamat" class="col-lg-2 control-label">Alamat</label>
+				<div class="col-lg-4">
+					<input type="text" class="form-control" name="txtAlamat" id="txtAlamat" value="<?php echo $dataAlamat; ?>" autocomplete="off" style="display: block; margin-bottom: 10px;">
+				</div>
+				<div class="form-group">
+					<label for="txtNama" class="col-lg-2 control-label">Nama Pegawai</label>
+					<div class="col-lg-4">
+						<input type="text" class="form-control" name="txtNama" id="txtNama" value="<?php echo $dataNama; ?>" autocomplete="off">
+					</div>
+					<div class="form-group">
+						<label for="txtTelepon" class="col-lg-2 control-label">No. Telepon</label>
+						<div class="col-lg-4">
+							<input type="text" class="form-control" name="txtTelepon" id="txtTelepon" value="<?php echo $dataTelepon; ?>" autocomplete="off" style="display: block; margin-bottom: 10px;">
+						</div>
+						<div class="form-group">
+							<label for="cmbKelamin" class="col-lg-2 control-label">Kelamin </label>
+							<div class="col-lg-4">
+								<select name="cmbKelamin" id="cmbKelamin" data-live-search="true" class="selectpicker show-tick form-control" autocomplete="off">
+									<option value=""> Pilih Jenis Kelamin </option>
+									<?php
+									$pilihan	= array("Laki-laki", "Perempuan");
+									foreach ($pilihan as $nilai) {
+										if ($dataKelamin == $nilai) {
+											$cek = " selected";
+										} else {
+											$cek = "";
+										}
+										echo "<option value='$nilai' $cek>$nilai</option>";
+									}
+									?>
+								</select>
+							</div>
+							<label for="cmbDepartemen" class="col-lg-2 control-label">Departemen</label>
+							<div class="col-lg-4">
+								<select name="cmbDepartemen" id="cmbDepartemen" data-live-search="true" class="selectpicker show-tick form-control" autocomplete="off">
+									<option value=""> Pilih Departemen </option>
+									<?php if (isset($_SESSION["SES_PETUGAS"]) && ($_SESSION["SES_UNIT"])) {
+										$mySql = "SELECT * FROM departemen WHERE nm_departemen='$_SESSION[SES_UNIT]' ORDER BY kd_departemen";
+										$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
+										while ($myData = mysql_fetch_array($myQry)) {
+											if ($kodeDepartemen == $myData['kd_departemen']) {
+												$cek = " selected";
+											} else {
+												$cek = "";
+											}
+											echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
+										}
+										$mySql = "";
+									?>
+									<?php } else { ?>
+									<?php
+										$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
+										$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
+										while ($myData = mysql_fetch_array($myQry)) {
+											if ($kodeDepartemen == $myData['kd_departemen']) {
+												$cek = " selected";
+											} else {
+												$cek = "";
+											}
+											echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
+										}
+										$mySql = "";
+									} ?>
+								</select>
+							</div>
+							<div class="form-group">
+								<div class="col-lg-offset-2 col-lg-10" style="display: block; margin-top: 50px;">
+									<button type="submit" name="btnSimpan" class="btn btn-success">
+										<span class="glyphicon glyphicon-floppy-saved" aria-hidden="true">&nbsp;</span><b>SIMPAN</b>
+									</button>
+									<button type="submit" name="btnKembali" class="btn btn-danger">
+										<span class="glyphicon glyphicon-chevron-left" aria-hidden="true">&nbsp;</span><b>KEMBALI</b>
+									</button>
+								</div>
+							</div>
+						</div>
+		</form>
+	</div>

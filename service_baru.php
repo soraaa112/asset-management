@@ -179,7 +179,7 @@
 				<div class="form-group">
 					<label for="files" class="col-lg-2 control-label">Surat Jalan</label>
 					<div class="col-lg-4">
-						<input class="form-control" type="file" id="files" name="files[]" style="display: block; margin-bottom: 15px;">
+						<input class="form-control" type="file" id="files" name="files[]" style="display: block; margin-bottom: 12px;">
 					</div>
 				</div>
 				<div class="form-group">
@@ -191,34 +191,10 @@
 					<div class="col-lg-4">
 						<input class="form-control" name="txtNomor" id="txtNomor" value="<?php echo $noTransaksi; ?>" readonly>
 					</div>
-					<label for="date" class="col-lg-2 control-label">Tanggal Kirim</label>
-					<div class="col-lg-4">
-						<input id="date" class="form-control" name="txtTanggalKirim" placeholder="dd-mm-yyyy" autocomplete="off" style="display: block; margin-bottom: 12px;">
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="cmbLokasi" class="col-lg-2 control-label">Lokasi</label>
-					<div class="col-lg-4">
-						<select name="cmbLokasi" id="cmbLokasi" data-live-search="true" class="selectpicker show-tick form-control">
-							<option value=""> Pilih Lokasi </option>
-							<?php
-							$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
-							$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
-							while ($myData = mysql_fetch_array($myQry)) {
-								if ($lokasi == $myData['kd_departemen']) {
-									$cek = " selected";
-								} else {
-									$cek = "";
-								}
-								echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
-							}
-							?>
-						</select>
-					</div>
 					<label for="cmbVendor" class="col-lg-2 control-label">Vendor Servis</label>
-					<div class="col-lg-4">
+					<div class="col-lg-4" style="border-radius: 5px; margin-bottom: 12px;">
 						<select name="cmbVendor" id="cmbVendor" data-live-search="true" class="selectpicker show-tick form-control">
-							<option value=""> Pilih Vendor Service </option>
+							<option value=""> Pilih Vendor </option>
 							<?php
 							$mySql = "SELECT * FROM supplier ORDER BY kd_supplier";
 							$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
@@ -233,17 +209,40 @@
 							?>
 						</select>
 					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-lg-offset-2 col-lg-10" style="display: block; margin-top: 20px;">
-						<button type="submit" name="btnSimpan" class="btn btn-success">
-							<span class="glyphicon glyphicon-floppy-saved" aria-hidden="true">&nbsp;</span><b>SIMPAN</b>
-						</button>
-						<button type="submit" name="btnKembali" class="btn btn-danger">
-							<span class="glyphicon glyphicon-chevron-left" aria-hidden="true">&nbsp;</span><b>KEMBALI</b>
-						</button>
+					<div class="form-group">
+						<label for="cmbLokasi" class="col-lg-2 control-label">Lokasi</label>
+						<div class="col-lg-4" style="border-radius: 5px; margin-bottom: 12px;">
+							<select name="cmbLokasi" id="cmbLokasi" data-live-search="true" class="selectpicker show-tick form-control">
+								<option value=""> Pilih Lokasi </option>
+								<?php
+								$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
+								$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
+								while ($myData = mysql_fetch_array($myQry)) {
+									if ($lokasi == $myData['kd_departemen']) {
+										$cek = " selected";
+									} else {
+										$cek = "";
+									}
+									echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
+								}
+								?>
+							</select>
+						</div>
+						<label for="date" class="col-lg-2 control-label">Tanggal Kirim</label>
+						<div class="col-lg-4">
+							<input id="date" class="form-control" name="txtTanggalKirim" placeholder="dd-mm-yyyy" autocomplete="off" style="display: block; margin-bottom: 12px;">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-offset-2 col-lg-10" style="display: block; margin-top: 30px;">
+							<button type="submit" name="btnSimpan" class="btn btn-success">
+								<span class="glyphicon glyphicon-floppy-saved" aria-hidden="true">&nbsp;</span><b>SIMPAN</b>
+							</button>
+							<button type="submit" name="btnKembali" class="btn btn-danger">
+								<span class="glyphicon glyphicon-chevron-left" aria-hidden="true">&nbsp;</span><b>KEMBALI</b>
+							</button>
+						</div>
 					</div>
 				</div>
-			</div>
 		</form>
 	</div>

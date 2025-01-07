@@ -41,21 +41,21 @@
 		if (trim($txtKodeInventaris) == "") {
 			$pesanError[] = "Data <b>Kode/ Label Barang</b> belum diisi, ketik secara manual atau dari <b>Barcode Reader atau Pencarian Barang</b> !";
 		} else {
-		# Periksa 1, apakah Kode Inventaris yang dimasukkan ada di dalam Database
-		$cekSql	= "SELECT * FROM barang_inventaris WHERE kd_inventaris='$txtKodeInventaris' OR RIGHT(kd_inventaris,6) ='$txtKodeInventaris'";
-		$cekQry = mysql_query($cekSql, $koneksidb) or die("Gagal Query" . mysql_error());
-		if (mysql_num_rows($cekQry) < 1) {
-			$pesanError[] = "Barang Kode/ Label <b>$txtKodeInventaris</b> tidak ditemukan dalam database!";
-		} else {
-			// Jika kode barang ditemukan di tabel barang_inventaris, maka periksa status-nya 
-			$cekData = mysql_fetch_array($cekQry);
-			if ($cekData['status_barang'] == "Ditempatkan") {
-				$pesanError[] = "Barang dengan Kode <b>$txtKodeInventaris</b> tidak dapat dipinjam, karna <b> sudah ditempatkan/ dipakai</b>!";
+			# Periksa 1, apakah Kode Inventaris yang dimasukkan ada di dalam Database
+			$cekSql	= "SELECT * FROM barang_inventaris WHERE kd_inventaris='$txtKodeInventaris' OR RIGHT(kd_inventaris,6) ='$txtKodeInventaris'";
+			$cekQry = mysql_query($cekSql, $koneksidb) or die("Gagal Query" . mysql_error());
+			if (mysql_num_rows($cekQry) < 1) {
+				$pesanError[] = "Barang Kode/ Label <b>$txtKodeInventaris</b> tidak ditemukan dalam database!";
+			} else {
+				// Jika kode barang ditemukan di tabel barang_inventaris, maka periksa status-nya 
+				$cekData = mysql_fetch_array($cekQry);
+				if ($cekData['status_barang'] == "Ditempatkan") {
+					$pesanError[] = "Barang dengan Kode <b>$txtKodeInventaris</b> tidak dapat dipinjam, karna <b> sudah ditempatkan/ dipakai</b>!";
+				}
+				if ($cekData['status_barang'] == "Dipinjam") {
+					$pesanError[] = "Barang dengan Kode <b>$txtKodeInventaris</b> tidak dapat dipinjam, karna <b> sedang dipinjam</b>!";
+				}
 			}
-			if ($cekData['status_barang'] == "Dipinjam") {
-				$pesanError[] = "Barang dengan Kode <b>$txtKodeInventaris</b> tidak dapat dipinjam, karna <b> sedang dipinjam</b>!";
-			}
-		}
 		}
 
 		# Periksa 2, apakah Kode Inventaris sudah diinput atau belum
@@ -216,7 +216,6 @@
 	if (isset($_POST['btnKembali'])) {
 
 		echo "<meta http-equiv='refresh' content='0; url=?open=Peminjaman-Tampil'>";
-		
 	}
 	// ============================================================================
 
@@ -229,7 +228,6 @@
 	$dataPegawai 		= isset($_POST['cmbPegawai']) ? $_POST['cmbPegawai'] : '';
 	$files				= isset($_POST['files']) ? $_POST['files'] : '';
 	?>
-
 	<SCRIPT language="JavaScript">
 		function submitform() {
 			document.form1.submit();
@@ -238,136 +236,132 @@
 	<div class="table-border">
 		<h2>TRANSAKSI PEMINJAMAN</h2>
 		<form action="<?php $_SERVER['PHP_SELF']; ?>" method="post" name="form1" target="_self" enctype="multipart/form-data">
-			<table width="900" cellpadding="3" cellspacing="1" class="table-list">
-				<tr>
-					<td bgcolor="#F5F5F5"><strong>INPUT BARANG </strong></td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td><strong>Kode/ Label Barang </strong></td>
-					<td><strong>:</strong></td>
-					<td><b>
-							<input name="txtKodeInventaris" id="txtKodeInventaris" size="20" maxlength="12" />
-							<input name="btnTambah" type="submit" style="cursor:pointer;" value=" Tambah " />
-						</b></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td><strong>:</strong></td>
-					<td><input name="txtNamaBrg" id="txtNamaBrg" size="20" maxlength="100" disabled="disabled" /></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>
-						<a href="javaScript: void(0)" onclick="window.open('pencarian_barang.php')" target="_self"><strong>Pencarian Barang</strong></a>,<strong></strong> untuk membaca label barang
-					</td>
-				</tr>
-				<tr>
-					<td bgcolor="#F5F5F5"><strong>PEMINJAMAN</strong></td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td width="15%"><strong>No. Peminjaman </strong></td>
-					<td width="1%"><strong>:</strong></td>
-					<td width="78%"><input name="txtNomor" value="<?php echo $dataKode; ?>" readonly="readonly" /></td>
-				</tr>
-				<tr>
-					<td><strong>Tgl. Peminjaman </strong></td>
-					<td><strong>:</strong></td>
-					<td><input type="text" name="txtTanggal" id="date" class="tcal" value="<?php echo $dataTglTransaksi; ?>" /></td>
-				</tr>
-				<tr>
-					<td><strong>Tgl. Akan Kembali </strong></td>
-					<td><strong>:</strong></td>
-					<td><input type="text" name="txtTglKembali" id="date2" class="tcal" value="<?php echo $dataTglKembali; ?>" /></td>
-				</tr>
-				<tr>
-					<td><strong>Departemen</strong></td>
-					<td><b>:</b></td>
-					<td>
-						<select name="cmbDepartemen" onchange="javascript:submitform();" data-live-search="true" class="selectpicker">
-							<option value="Semua">Semua</option>
-							<?php
-							$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
-							$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
-							while ($myData = mysql_fetch_array($myQry)) {
-								if ($dataDepartemen == $myData['kd_departemen']) {
-									$cek = " selected";
-								} else {
-									$cek = "";
-								}
-								echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
-							}
-							$mySql = "";
-							?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td><strong>Data Pegawai </strong></td>
-					<td><strong>:</strong></td>
-					<td><b>
-							<select name="cmbPegawai" data-live-search="true" class="selectpicker">
-								<option value="Kosong"> Pilih Pegawai </option>
-								<?php
-								// Menampilkan data Lokasi dengan filter Nama Departemen yang dipilih
-								$comboSql = "SELECT * FROM pegawai WHERE kd_departemen='$dataDepartemen' ORDER BY nm_pegawai ASC";
-								$comboQry = mysql_query($comboSql, $koneksidb) or die("Gagal Query" . mysql_error());
-								while ($comboData = mysql_fetch_array($comboQry)) {
-									if ($dataLokasi == $comboData['kd_pegawai']) {
-										$cek = " selected";
-									} else {
-										$cek = "";
+			<div class="row">
+				<div class="form-group">
+					<label id="tag" class="col-lg-12 control-label" style="border-radius: 5px; margin-bottom: 12px;">
+						<ins><span class="glyphicon glyphicon-briefcase">&nbsp;</span>INPUT BARANG</ins></label>
+				</div>
+				<div class="form-group">
+					<label for="txtKodeInventaris" class="col-lg-2 control-label">Kode Barang</label>
+					<div class="col-lg-4" style="border-radius: 5px; margin-bottom: 1px;">
+						<div class="input-group">
+							<span class="input-group-btn">
+								<a href="javaScript: void(0)" onclick="window.open('pencarian_barang_service.php')" target="_self">
+									<button class="btn btn-info" type="button">Pencarian Barang</button>
+								</a>
+							</span>
+							<input type="text" class="form-control" name="txtKodeInventaris" id="txtKodeInventaris" maxlength="12" placeholder="Search for kode barang..." autocomplete="off">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="txtNamaBrg" class="col-lg-2 control-label">Nama Barang</label>
+						<div class="col-lg-4" style="border-radius: 5px; margin-bottom: 5px;">
+							<input type="text" class="form-control" name="txtNamaBrg" id="txtNamaBrg" placeholder="Nama Barang..." readonly>
+						</div>
+						<div class="col-lg-offset-2 col-lg-10" style="border-radius: 5px; margin-bottom: 20px;">
+							<button type="submit" name="btnTambah" class="btn btn-primary btn-sm ">
+								<span class="glyphicon glyphicon-plus" aria-hidden="true">&nbsp;</span><b>TAMBAH</b>
+							</button>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-12 control-label" style="border-radius: 5px; margin-bottom: 12px;">
+							<span class="glyphicon glyphicon-wrench">&nbsp;</span><ins>PEMINJAMAN</ins></label>
+					</div>
+					<div class="form-group">
+						<label for="txtNomor" class="col-lg-2 control-label">No. Peminjaman</label>
+						<div class="col-lg-4">
+							<input class="form-control" name="txtNomor" id="txtNomor" value="<?php echo $dataKode; ?>" readonly>
+						</div>
+						<div class="form-group">
+							<label for="cmbPegawai" class="col-lg-2 control-label">Data Pegawai</label>
+							<div class="col-lg-4" style="display: block; margin-bottom: 12px;">
+								<select name="cmbPegawai" data-live-search="true" class="selectpicker form-control">
+									<option value=""> Pilih Pegawai </option>
+									<?php
+									// Menampilkan data Lokasi dengan filter Nama Departemen yang dipilih
+									$comboSql = "SELECT * FROM pegawai WHERE kd_departemen='$dataDepartemen' ORDER BY nm_pegawai ASC";
+									$comboQry = mysql_query($comboSql, $koneksidb) or die("Gagal Query" . mysql_error());
+									while ($comboData = mysql_fetch_array($comboQry)) {
+										if ($dataLokasi == $comboData['kd_pegawai']) {
+											$cek = " selected";
+										} else {
+											$cek = "";
+										}
+										echo "<option value='$comboData[kd_pegawai]' $cek> $comboData[nm_pegawai]</option>";
 									}
-									echo "<option value='$comboData[kd_pegawai]' $cek> $comboData[nm_pegawai]</option>";
-								}
-								?>
-							</select>
-						</b>
-					</td>
-				</tr>
-				<tr>
-					<td><b>Form BAST</b></td>
-					<td><b>:</b></td>
-					<td><input type="file" name="files[]" multiple /></td>
-				</tr>
-				<tr>
-					<td><strong>Keterangan</strong></td>
-					<td><strong>:</strong></td>
-					<td><input name="txtKeterangan" value="<?php echo $dataKeterangan; ?>" size="20" maxlength="100" /></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td><input name="btnSimpan" type="submit" style="cursor:pointer;" value=" Simpan Data " />
-						<input name="btnKembali" type="submit" value=" Kembali " />
-					</td>
-				</tr>
-			</table>
+									?>
+								</select>
+							</div>
+							<label for="date" class="col-lg-2 control-label">Tgl. Peminjaman</label>
+							<div class="col-lg-4">
+								<input id="date" type="text" class="form-control" name="txtTanggal" value="<?php echo $dataTglTransaksi; ?>" placeholder="dd-mm-yyyy" autocomplete="off" style="display: block; margin-bottom: 12px;">
+							</div>
+							<div class="form-group">
+								<label for="cmbDepartemen" class="col-lg-2 control-label">Departemen</label>
+								<div class="col-lg-4" style="display: block; margin-bottom: 12px;">
+									<select name="cmbDepartemen" onchange="javascript:submitform();" data-live-search="true" class="selectpicker form-control">
+										<option value="">Pilih Departemen</option>
+										<?php
+										$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
+										$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
+										while ($myData = mysql_fetch_array($myQry)) {
+											if ($dataDepartemen == $myData['kd_departemen']) {
+												$cek = " selected";
+											} else {
+												$cek = "";
+											}
+											echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
+										}
+										$mySql = "";
+										?>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="date2" class="col-lg-2 control-label">Tgl. Akan Kembali</label>
+									<div class="col-lg-4">
+										<input id="date2" type="text" class="form-control" name="txtTglKembali" value="<?php echo $dataTglKembali; ?>" placeholder="dd-mm-yyyy" autocomplete="off" style="display: block; margin-bottom: 12px;">
+									</div>
+									<div class="form-group">
+										<label for="files" class="col-lg-2 control-label">Form / BAST</label>
+										<div class="col-lg-4">
+											<input class="form-control" type="file" id="files" name="files[]" multiple style="display: block; margin-bottom: 15px;">
+										</div>
+										<label for="txtKeterangan" class="col-lg-2 control-label">Keterangan</label>
+										<div class="col-lg-4">
+											<input class="form-control" name="txtKeterangan" id="txtKeterangan" value="<?php echo $dataKeterangan; ?>" style="display: block; margin-bottom: 12px;">
+										</div>
+									</div>
 
-			<table class="table-list" width="900" border="0" cellspacing="1" cellpadding="2">
-				<tr>
-					<th colspan="6">DAFTAR BARANG </th>
-				</tr>
-				<tr>
-					<td width="25" align="center" bgcolor="#CCCCCC"><strong>No</strong></td>
-					<td width="92" bgcolor="#CCCCCC"><strong>Kode</strong></td>
-					<td width="300" bgcolor="#CCCCCC"><strong>Type Barang </strong></td>
-					<td width="150" bgcolor="#CCCCCC"><strong>Petugas Input</strong></td>
-					<td width="150" bgcolor="#CCCCCC"><strong>Departemen</strong></td>
-					<td width="49" align="center" bgcolor="#CCCCCC"><strong>Aksi</strong></td>
-				</tr>
-				<?php
-				// Qury menampilkan data dalam Grid TMP_peminjaman 
-				$tmpSql = "SELECT tmp.*, barang.*, petugas.nm_petugas, departemen.nm_departemen FROM tmp_peminjaman As tmp
+									<div class="form-group">
+										<div class="col-lg-offset-2 col-lg-10" style="display: block; margin-top: 30px;">
+											<button type="submit" name="btnSimpan" class="btn btn-success">
+												<span class="glyphicon glyphicon-floppy-saved" aria-hidden="true">&nbsp;</span><b>SIMPAN</b>
+											</button>
+											<button type="submit" name="btnKembali" class="btn btn-danger">
+												<span class="glyphicon glyphicon-chevron-left" aria-hidden="true">&nbsp;</span><b>KEMBALI</b>
+											</button>
+										</div>
+									</div>
+								</div>
+		</form>
+	</div>
+
+	<table class="table-list" width="900" border="0" cellspacing="1" cellpadding="2">
+		<tr>
+			<th colspan="6">DAFTAR BARANG </th>
+		</tr>
+		<tr>
+			<td width="25" align="center" bgcolor="#CCCCCC"><strong>No</strong></td>
+			<td width="92" bgcolor="#CCCCCC"><strong>Kode</strong></td>
+			<td width="300" bgcolor="#CCCCCC"><strong>Type Barang </strong></td>
+			<td width="150" bgcolor="#CCCCCC"><strong>Petugas Input</strong></td>
+			<td width="150" bgcolor="#CCCCCC"><strong>Departemen</strong></td>
+			<td width="49" align="center" bgcolor="#CCCCCC"><strong>Aksi</strong></td>
+		</tr>
+		<?php
+		// Qury menampilkan data dalam Grid TMP_peminjaman 
+		$tmpSql = "SELECT tmp.*, barang.*, petugas.nm_petugas, departemen.nm_departemen FROM tmp_peminjaman As tmp
 			LEFT JOIN barang_inventaris ON tmp.kd_inventaris  = barang_inventaris.kd_inventaris
 			LEFT JOIN barang ON barang_inventaris.kd_barang = barang.kd_barang
 			LEFT JOIN pengadaan ON barang_inventaris.no_pengadaan = pengadaan.no_pengadaan
@@ -375,21 +369,21 @@
 			LEFT JOIN departemen ON petugas.kd_departemen = departemen.kd_departemen
 			WHERE tmp.kd_petugas='$userLogin'
 			ORDER BY barang.kd_barang ";
-				$tmpQry = mysql_query($tmpSql, $koneksidb) or die("Gagal Query Tmp" . mysql_error());
-				$nomor = 0;
-				while ($tmpData = mysql_fetch_array($tmpQry)) {
-					$nomor++;
-					$ID			= $tmpData['id'];
-				?>
-					<tr>
-						<td align="center"><?php echo $nomor; ?></td>
-						<td><b><?php echo $tmpData['kd_inventaris']; ?></b></td>
-						<td><?php echo $tmpData['nm_barang']; ?></td>
-						<td><?php echo $tmpData['nm_petugas']; ?></td>
-						<td><?php echo $tmpData['nm_departemen']; ?></td>
-						<td align="center" bgcolor="#FFFFCC"><a href="index.php?open=Peminjaman-Baru&Act=Delete&ID=<?php echo $ID; ?>" target="_self">Delete</a></td>
-					</tr>
-				<?php } ?>
-			</table>
-		</form>
+		$tmpQry = mysql_query($tmpSql, $koneksidb) or die("Gagal Query Tmp" . mysql_error());
+		$nomor = 0;
+		while ($tmpData = mysql_fetch_array($tmpQry)) {
+			$nomor++;
+			$ID			= $tmpData['id'];
+		?>
+			<tr>
+				<td align="center"><?php echo $nomor; ?></td>
+				<td><b><?php echo $tmpData['kd_inventaris']; ?></b></td>
+				<td><?php echo $tmpData['nm_barang']; ?></td>
+				<td><?php echo $tmpData['nm_petugas']; ?></td>
+				<td><?php echo $tmpData['nm_departemen']; ?></td>
+				<td align="center" bgcolor="#FFFFCC"><a href="index.php?open=Peminjaman-Baru&Act=Delete&ID=<?php echo $ID; ?>" target="_self">Delete</a></td>
+			</tr>
+		<?php } ?>
+	</table>
+	</form>
 	</div>

@@ -56,57 +56,70 @@
 		}
 	} // Penutup Tombol Simpan
 
+	if (isset($_POST['btnKembali'])) {
+
+		echo "<meta http-equiv='refresh' content='0; url=?open=Lokasi-Data'>";
+	}
+
+
 	# MASUKKAN DATA KE VARIABEL
 	// Supaya saat ada pesan error, data di dalam form tidak hilang. Jadi, tinggal meneruskan/memperbaiki yg salah
 	$dataKode	= buatKode5($koneksidb, "lokasi", "L");
 	$dataNama	= isset($_POST['txtNama']) ? $_POST['txtNama'] : '';
 	$dataDepartemen	= isset($_POST['cmbDepartemen']) ? $_POST['cmbDepartemen'] : '';
 	?>
-	<form action="<?php $_SERVER['PHP_SELF']; ?>" method="post" name="form1" target="_self">
-		<table class="table-list" width="100%">
-			<tr>
-				<th colspan="3">TAMBAH DATA LOKASI </th>
-			</tr>
-			<tr>
-				<td width="15%"><b>Kode</b></td>
-				<td width="1%"><b>:</b></td>
-				<td width="84%"><input name="textfield" value="<?php echo $dataKode; ?>" size="26" maxlength="4" readonly="readonly" /></td>
-			</tr>
-			<tr>
-				<td><b>Nama Lokasi </b></td>
-				<td><b>:</b></td>
-				<td><input name="txtNama" value="<?php echo $dataNama; ?>" size="26" maxlength="100" /></td>
-			</tr>
-			<tr>
-				<td><strong>Departemen </strong></td>
-				<td><strong>:</strong></td>
-				<td>
-					<select name="cmbDepartemen" data-live-search="true" class="selectpicker">
-						<option value="Semua">Semua</option>
-						<?php
-						$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
-						$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
-						while ($myData = mysql_fetch_array($myQry)) {
-							if ($kodeDepartemen == $myData['kd_departemen']) {
-								$cek = " selected";
-							} else {
-								$cek = "";
+
+	</SCRIPT>
+	<div class="table-border">
+		<h2>TAMBAH DATA LOKASI</h2>
+		<form action="<?php $_SERVER['PHP_SELF']; ?>" method="post" name="form1" target="_self" enctype="multipart/form-data">
+			<div class="row">
+				<div class="form-group">
+					<label for="textfield" class="col-lg-2 control-label">Kode</label>
+					<div class="col-lg-4">
+						<input type="text" class="form-control" name="textfield" id="textfield" value="<?php echo $dataKode; ?>" autocomplete="off" style="display: block; margin-bottom: 10px;">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group">
+					<label for="txtNama" class="col-lg-2 control-label">Nama Lokasi</label>
+					<div class="col-lg-4">
+						<input type="text" class="form-control" name="txtNama" id="txtNama" value="<?php echo $dataNama; ?>" autocomplete="off" style="display: block; margin-bottom: 10px;">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group">
+					<label for="cmbDepartemen" class="col-lg-2 control-label">Departemen</label>
+					<div class="col-lg-4">
+						<select name="cmbDepartemen" id="cmbDepartemen" data-live-search="true" class="selectpicker show-tick form-control" autocomplete="off" style="display: block; margin-bottom: 10px;">
+							<option value=""> Pilih Departemen </option>
+							<?php
+							$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
+							$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
+							while ($myData = mysql_fetch_array($myQry)) {
+								if ($kodeDepartemen == $myData['kd_departemen']) {
+									$cek = " selected";
+								} else {
+									$cek = "";
+								}
+								echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
 							}
-							echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
-						}
-						$mySql = "";
-						?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td><input type="submit" name="btnSimpan" value=" Simpan ">
-					<a href="?open=Lokasi-Data">
-						<input type="button" value=" Kembali " />
-					</a>
-				</td>
-			</tr>
-		</table>
-	</form>
+							$mySql = "";
+							?>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-lg-offset-2 col-lg-10" style="display: block; margin-top: 50px;">
+						<button type="submit" name="btnSimpan" class="btn btn-success">
+							<span class="glyphicon glyphicon-floppy-saved" aria-hidden="true">&nbsp;</span><b>SIMPAN</b>
+						</button>
+						<button type="submit" name="btnKembali" class="btn btn-danger">
+							<span class="glyphicon glyphicon-chevron-left" aria-hidden="true">&nbsp;</span><b>KEMBALI</b>
+						</button>
+					</div>
+				</div>
+		</form>
+	</div>

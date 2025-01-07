@@ -40,23 +40,23 @@
 		// Validasi form
 		$pesanError = array();
 		if (trim($txtKodeInventaris) == "") {
-		$pesanError[] = "Data <b>Kode/ Label Barang</b> belum diisi, ketik secara manual atau dari <b>Barcode Reader atau Pencarian Barang</b> !";
+			$pesanError[] = "Data <b>Kode/ Label Barang</b> belum diisi, ketik secara manual atau dari <b>Barcode Reader atau Pencarian Barang</b> !";
 		} else {
-		# Periksa 1, apakah Kode Inventaris yang dimasukkan ada di dalam Database
-		$cekSql	= "SELECT * FROM barang_inventaris WHERE kd_inventaris='$txtKodeInventaris' OR RIGHT(kd_inventaris,6) ='$txtKodeInventaris'";
-		$cekQry = mysql_query($cekSql, $koneksidb) or die("Gagal Query" . mysql_error());
-		if (mysql_num_rows($cekQry) < 1) {
-			$pesanError[] = "Barang Kode/ Label <b>$txtKodeInventaris</b> tidak ditemukan dalam database!";
-		} else {
-			// Jika kode barang ditemukan di tabel barang_inventaris, maka periksa status-nya 
-			$cekData = mysql_fetch_array($cekQry);
-			if ($cekData['status_barang'] == "Ditempatkan") {
-				$pesanError[] = "Barang dengan Kode <b>$txtKodeInventaris</b> tidak dapat dipinjam, karna <b> sudah ditempatkan/ dipakai</b>!";
+			# Periksa 1, apakah Kode Inventaris yang dimasukkan ada di dalam Database
+			$cekSql	= "SELECT * FROM barang_inventaris WHERE kd_inventaris='$txtKodeInventaris' OR RIGHT(kd_inventaris,6) ='$txtKodeInventaris'";
+			$cekQry = mysql_query($cekSql, $koneksidb) or die("Gagal Query" . mysql_error());
+			if (mysql_num_rows($cekQry) < 1) {
+				$pesanError[] = "Barang Kode/ Label <b>$txtKodeInventaris</b> tidak ditemukan dalam database!";
+			} else {
+				// Jika kode barang ditemukan di tabel barang_inventaris, maka periksa status-nya 
+				$cekData = mysql_fetch_array($cekQry);
+				if ($cekData['status_barang'] == "Ditempatkan") {
+					$pesanError[] = "Barang dengan Kode <b>$txtKodeInventaris</b> tidak dapat dipinjam, karna <b> sudah ditempatkan/ dipakai</b>!";
+				}
+				if ($cekData['status_barang'] == "Dipinjam") {
+					$pesanError[] = "Barang dengan Kode <b>$txtKodeInventaris</b> tidak dapat dipinjam, karna <b> sedang dipinjam</b>!";
+				}
 			}
-			if ($cekData['status_barang'] == "Dipinjam") {
-				$pesanError[] = "Barang dengan Kode <b>$txtKodeInventaris</b> tidak dapat dipinjam, karna <b> sedang dipinjam</b>!";
-			}
-		}
 		}
 
 		# Periksa Database 2, apakah Kode Inventaris sudah diinput atau belum
@@ -199,7 +199,7 @@
 	}
 
 	if (isset($_POST['btnKembali'])) {
-			echo "<meta http-equiv='refresh' content='0; url=?open=Penempatan-Tampil'>";
+		echo "<meta http-equiv='refresh' content='0; url=?open=Penempatan-Tampil'>";
 	}
 
 	# TAMPILKAN DATA KE FORM
@@ -210,82 +210,61 @@
 	$files			= isset($_POST['files']) ? $_POST['files'] : '';
 
 	?>
-
 	<SCRIPT language="JavaScript">
 		function submitform() {
 			document.form1.submit();
 		}
 	</SCRIPT>
 	<div class="table-border">
-		<h2>TRANSAKSI PENEMPATAN </h2>
+		<h2>TRANSAKSI PENEMPATAN</h2>
 		<form action="<?php $_SERVER['PHP_SELF']; ?>" method="post" name="form1" target="_self" enctype="multipart/form-data">
-			<table width="900" cellpadding="3" cellspacing="1" class="table-list">
-				<tr>
-					<td bgcolor="#F5F5F5"><strong>INPUT BARANG </strong></td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td><strong>Kode/ Label Barang </strong></td>
-					<td><strong>:</strong></td>
-					<td><b>
-							<input name="txtKodeInventaris" id="txtKodeInventaris" size="24" maxlength="12" />
-							<input name="btnTambah" type="submit" style="cursor:pointer;" value=" Tambah " />
-						</b></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td><strong>:</strong></td>
-					<td><input name="txtNamaBrg" id="txtNamaBrg" size="26" maxlength="20" disabled="disabled" /></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td><a href="javaScript: void(0)" onclick="window.open('pencarian_barang.php')" target="_self"><strong>Pencarian Barang</strong></a>,<strong></strong> untuk membaca label barang </td>
-				</tr>
-				<tr>
-					<td bgcolor="#F5F5F5"><strong> PENEMPATAN </strong></td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td width="15%"><strong>No. Penempatan </strong></td>
-					<td width="1%"><strong>:</strong></td>
-					<td width="78%"><input name="txtNomor" size="26" value="<?php echo $dataKode; ?>" readonly="readonly" /></td>
-				</tr>
-				<tr>
-					<td><strong>Tgl. Penempatan </strong></td>
-					<td><strong>:</strong></td>
-					<td><input type="text" name="txtTanggal" id="date" size="26" class="tcal" value="<?php echo $dataTanggal; ?>" /></td>
-				</tr>
-				<tr>
-					<td><strong>Departemen </strong></td>
-					<td><strong>:</strong></td>
-					<td>
-						<select name="cmbDepartemen" onchange="javascript:submitform();" data-live-search="true" class="selectpicker">
-							<option value="Semua">Semua</option>
-							<?php
-							$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
-							$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
-							while ($myData = mysql_fetch_array($myQry)) {
-								if ($dataDepartemen == $myData['kd_departemen']) {
-									$cek = " selected";
-								} else {
-									$cek = "";
-								}
-								echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
-							}
-							$mySql = "";
-							?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td><strong>Lokasi Penempatan </strong></td>
-					<td><strong>:</strong></td>
-					<td><b>
-							<select name="cmbLokasi" data-live-search="true" class="selectpicker">
-								<option value="Kosong"> Pilih Lokasi </option>
+			<div class="row">
+				<div class="form-group">
+					<label id="tag" class="col-lg-12 control-label" style="border-radius: 5px; margin-bottom: 12px;">
+						<ins><span class="glyphicon glyphicon-briefcase">&nbsp;</span>INPUT BARANG</ins></label>
+				</div>
+				<div class="form-group">
+					<label for="txtKodeInventaris" class="col-lg-2 control-label">Kode Barang</label>
+					<div class="col-lg-4" style="border-radius: 5px; margin-bottom: 1px;">
+						<div class="input-group">
+							<span class="input-group-btn">
+								<a href="javaScript: void(0)" onclick="window.open('pencarian_barang_service.php')" target="_self">
+									<button class="btn btn-info" type="button">Pencarian Barang</button>
+								</a>
+							</span>
+							<input type="text" class="form-control" name="txtKodeInventaris" id="txtKodeInventaris" maxlength="12" placeholder="Search for kode barang..." autocomplete="off">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="txtNamaBrg" class="col-lg-2 control-label">Nama Barang</label>
+						<div class="col-lg-4" style="border-radius: 5px; margin-bottom: 5px;">
+							<input type="text" class="form-control" name="txtNamaBrg" id="txtNamaBrg" placeholder="Nama Barang..." readonly>
+						</div>
+						<div class="col-lg-offset-2 col-lg-10" style="border-radius: 5px; margin-bottom: 20px;">
+							<button type="submit" name="btnTambah" class="btn btn-primary btn-sm">
+								<span class="glyphicon glyphicon-plus" aria-hidden="true">&nbsp;</span><b>TAMBAH</b>
+							</button>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-12 control-label" style="border-radius: 5px; margin-bottom: 12px;">
+							<span class="glyphicon glyphicon-wrench">&nbsp;</span><ins>PENEMPATAN</ins></label>
+					</div>
+					<div class="form-group">
+						<label for="txtNomor" class="col-lg-2 control-label">No. Penempatan</label>
+						<div class="col-lg-4">
+							<input class="form-control" name="txtNomor" id="txtNomor" value="<?php echo $dataKode; ?>" readonly>
+						</div>
+						<label for="date" class="col-lg-2 control-label">Tgl. Penempatan</label>
+						<div class="col-lg-4">
+							<input id="date" type="text" class="form-control" name="txtTanggal" value="<?php echo $dataTanggal; ?>" placeholder="dd-mm-yyyy" autocomplete="off" style="display: block; margin-bottom: 12px;">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="cmbLokasi" class="col-lg-2 control-label">Lokasi Penempatan</label>
+						<div class="col-lg-4" style="display: block; margin-bottom: 12px;">
+							<select name="cmbLokasi" id="cmbLokasi" data-live-search="true" class="selectpicker show-tick form-control">
+								<option value=""> Pilih Lokasi </option>
 								<?php
 								// Menampilkan data Lokasi dengan filter Nama Departemen yang dipilih
 								$comboSql = "SELECT * FROM lokasi WHERE kd_departemen='$dataDepartemen' ORDER BY kd_lokasi";
@@ -300,42 +279,61 @@
 								}
 								?>
 							</select>
-						</b></td>
-				</tr>
-				<tr>
-					<td><b>BAST</b></td>
-					<td><b>:</b></td>
-					<td><input type='file' name="files[]" multiple /></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td><input name="btnSimpan" type="submit" style="cursor:pointer;" value=" Simpan Data " />
-						<input name="btnKembali" type="submit" value=" Kembali " />
-					</td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-			</table>
+						</div>
+						<label for="files" class="col-lg-2 control-label">BAST</label>
+						<div class="col-lg-4">
+							<input class="form-control" type="file" id="files" name="files[]" multiple style="display: block; margin-bottom: 15px;">
+						</div>
+						<div class="form-group">
+							<label for="cmbDepartemen" class="col-lg-2 control-label">Departemen</label>
+							<div class="col-lg-4" style="display: block; margin-bottom: 12px;">
+								<select id="cmbDepartemen" name="cmbDepartemen" onchange="javascript:submitform();" data-live-search="true" class="selectpicker show-tick form-control" autocomplete="off">
+									<option value=""> Pilih Departemen </option>
+									<?php
+									$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
+									$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
+									while ($myData = mysql_fetch_array($myQry)) {
+										if ($dataDepartemen == $myData['kd_departemen']) {
+											$cek = " selected";
+										} else {
+											$cek = "";
+										}
+										echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
+									}
+									$mySql = "";
+									?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-offset-2 col-lg-10" style="display: block; margin-top: 30px;">
+								<button type="submit" name="btnSimpan" class="btn btn-success">
+									<span class="glyphicon glyphicon-floppy-saved" aria-hidden="true">&nbsp;</span><b>SIMPAN</b>
+								</button>
+								<button type="submit" name="btnKembali" class="btn btn-danger">
+									<span class="glyphicon glyphicon-chevron-left" aria-hidden="true">&nbsp;</span><b>KEMBALI</b>
+								</button>
+							</div>
+						</div>
+					</div>
+		</form>
+	</div>
 
-			<table class="table-list" width="900" border="0" cellspacing="1" cellpadding="2">
-				<tr>
-					<th colspan="6">DAFTAR BARANG </th>
-				</tr>
-				<tr>
-					<td width="23" align="center" bgcolor="#CCCCCC"><strong>No</strong></td>
-					<td width="102" bgcolor="#CCCCCC"><strong>Kode</strong></td>
-					<td width="150" bgcolor="#CCCCCC"><strong>Type Barang </strong></td>
-					<td width="100" bgcolor="#CCCCCC"><strong>Petugas Input</strong></td>
-					<td width="100" bgcolor="#CCCCCC"><strong>Departemen</strong></td>
-					<td width="46" align="center" bgcolor="#CCCCCC"><strong>Aksi</strong></td>
-				</tr>
-				<?php
-				// Qury menampilkan data dalam Grid TMP_penempatan 
-				$tmpSql = "SELECT barang.*, tmp.*, petugas.nm_petugas, departemen.nm_departemen
+	<table class="table-list" width="900" border="0" cellspacing="1" cellpadding="2">
+		<tr>
+			<th colspan="6">DAFTAR BARANG </th>
+		</tr>
+		<tr>
+			<td width="23" align="center" bgcolor="#CCCCCC"><strong>No</strong></td>
+			<td width="102" bgcolor="#CCCCCC"><strong>Kode</strong></td>
+			<td width="150" bgcolor="#CCCCCC"><strong>Type Barang </strong></td>
+			<td width="100" bgcolor="#CCCCCC"><strong>Petugas Input</strong></td>
+			<td width="100" bgcolor="#CCCCCC"><strong>Departemen</strong></td>
+			<td width="46" align="center" bgcolor="#CCCCCC"><strong>Aksi</strong></td>
+		</tr>
+		<?php
+		// Qury menampilkan data dalam Grid TMP_penempatan 
+		$tmpSql = "SELECT barang.*, tmp.*, petugas.nm_petugas, departemen.nm_departemen
 				FROM tmp_penempatan As tmp
 				LEFT JOIN barang_inventaris ON tmp.kd_inventaris = barang_inventaris.kd_inventaris
 				LEFT JOIN barang ON barang_inventaris.kd_barang = barang.kd_barang
@@ -344,22 +342,22 @@
 				LEFT JOIN departemen ON petugas.kd_departemen = departemen.kd_departemen
 				WHERE tmp.kd_petugas='$userLogin'
 				ORDER BY barang.kd_barang ";
-				$tmpQry = mysql_query($tmpSql, $koneksidb) or die("Gagal Query Tmp" . mysql_error());
-				$nomor = 0;
-				while ($tmpData = mysql_fetch_array($tmpQry)) {
-					$nomor++;
-					$ID		= $tmpData['id'];
-				?>
-					<tr>
-						<td align="center"><?php echo $nomor; ?></td>
-						<td><b><?php echo $tmpData['kd_inventaris']; ?></b></td>
-						<td><?php echo $tmpData['nm_barang']; ?></td>
-						<td><?php echo $tmpData['nm_petugas']; ?></td>
-						<td><?php echo $tmpData['nm_departemen']; ?></td>
-						<td align="center" bgcolor="#FFFFCC"><a href="index.php?open=Penempatan-Baru&Act=Delete&ID=<?php echo $ID; ?>" target="_self">Delete</a></td>
-					</tr>
-				<?php
-				} ?>
-			</table>
-		</form>
+		$tmpQry = mysql_query($tmpSql, $koneksidb) or die("Gagal Query Tmp" . mysql_error());
+		$nomor = 0;
+		while ($tmpData = mysql_fetch_array($tmpQry)) {
+			$nomor++;
+			$ID		= $tmpData['id'];
+		?>
+			<tr>
+				<td align="center"><?php echo $nomor; ?></td>
+				<td><b><?php echo $tmpData['kd_inventaris']; ?></b></td>
+				<td><?php echo $tmpData['nm_barang']; ?></td>
+				<td><?php echo $tmpData['nm_petugas']; ?></td>
+				<td><?php echo $tmpData['nm_departemen']; ?></td>
+				<td align="center" bgcolor="#FFFFCC"><a href="index.php?open=Penempatan-Baru&Act=Delete&ID=<?php echo $ID; ?>" target="_self">Delete</a></td>
+			</tr>
+		<?php
+		} ?>
+	</table>
+	</form>
 	</div>

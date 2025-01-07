@@ -274,7 +274,6 @@
 		echo "<meta http-equiv='refresh' content='0; url=?open=Pengadaan-Tampil'>";
 	}
 	?>
-
 	<SCRIPT language="JavaScript">
 		function submitform() {
 			document.form1.submit();
@@ -283,17 +282,18 @@
 	<div class="table-border">
 		<h2>TRANSAKSI PENGADAAN </h2>
 		<form action="<?php $_SERVER['PHP_SELF']; ?>" method="post" name="form1" target="_self" enctype="multipart/form-data">
-			<table width="900" cellspacing="1" class="table-list" style="margin-top:0px;">
-				<tr>
-					<td bgcolor="#F5F5F5"><strong>INPUT BARANG </strong></td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td><strong>Kategori</strong></td>
-					<td><b>:</b></td>
-					<td><select name="cmbKategori" onchange="javascript:submitform();" data-live-search="true" class="selectpicker">
-							<option value="Kosong"> Pilih Kategori </option>
+			<div class="row">
+				<div class="form-group">
+					<label id="tag" class="col-lg-12 control-label" style="border-radius: 5px; margin-bottom: 12px;">
+						<ins><span class="glyphicon glyphicon-briefcase">&nbsp;</span> INPUT BARANG </ins></label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group">
+					<label for="cmbKategori" class="col-lg-2 control-label">Kategori</label>
+					<div class="col-lg-4" style="display: block; margin-bottom: 10px;">
+						<select name="cmbKategori" data-live-search="true" class="selectpicker form-control" id="cmbKategori" autocomplete="off">
+							<option value=""> Pilih Kategori </option>
 							<?php
 							$daftarSql = "SELECT * FROM kategori  ORDER BY kd_kategori";
 							$daftarQry = mysql_query($daftarSql, $koneksidb) or die("Gagal Query" . mysql_error());
@@ -307,301 +307,249 @@
 							}
 							?>
 						</select>
-					</td>
-				</tr>
-				<tr>
-					<td><strong>Type</strong></td>
-					<td><strong>:</strong></td>
-					<td><b>
-							<select name="cmbBarang" data-live-search="true" class="selectpicker">
-								<option value="Kosong"> Pilih Barang </option>
-								<?php
-								$mySql = "SELECT * FROM barang WHERE kd_kategori='$dataKategori' ORDER BY nm_barang ASC";
-								$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
-								while ($myData = mysql_fetch_array($myQry)) {
-									if ($dataBarang == $myData['kd_barang']) {
-										$cek = " selected";
-									} else {
-										$cek = "";
+					</div>
+					<div class="row">
+						<div class="form-group">
+							<label for="cmbBarang" class="col-lg-2 control-label">Type</label>
+							<div class="col-lg-4" style="display: block; margin-bottom: 10px;">
+								<select name="cmbBarang" data-live-search="true" class="selectpicker form-control" autocomplete="off">
+									<option value=""> Pilih Barang </option>
+									<?php
+									$mySql = "SELECT * FROM barang WHERE kd_kategori='$dataKategori' ORDER BY nm_barang ASC";
+									$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
+									while ($myData = mysql_fetch_array($myQry)) {
+										if ($dataBarang == $myData['kd_barang']) {
+											$cek = " selected";
+										} else {
+											$cek = "";
+										}
+										echo "<option value='$myData[kd_barang]' $cek> [ $myData[kd_barang] ] $myData[nm_barang]</option>";
 									}
-									echo "<option value='$myData[kd_barang]' $cek> [ $myData[kd_barang] ] $myData[nm_barang]</option>";
-								}
-								?>
-							</select>
-						</b><a href="?page=Pencarian-Barang" target="_blank"></a>
-					</td>
-				</tr>
-				<tr>
-					<td><strong>Supplier (Asal Barang) </strong></td>
-					<td><strong>:</strong></td>
-					<td><b>
-							<select name="cmbSupplier" data-live-search="true" class="selectpicker">
-								<option value="Kosong"> Pilih Supplier </option>
-								<?php
-								$mySql = "SELECT * FROM supplier ORDER BY kd_supplier";
-								$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
-								while ($myData = mysql_fetch_array($myQry)) {
-									if ($dataSupplier == $myData['kd_supplier']) {
-										$cek = " selected";
-									} else {
-										$cek = "";
-									}
-									echo "<option value='$myData[kd_supplier]' $cek>$myData[nm_supplier]</option>";
-								}
-								?>
-							</select>
-						</b>
-					</td>
-				</tr>
-				<tr>
-					<td><strong>Harga Barang/Beli (Rp.) </strong></td>
-					<td><strong>:</strong></td>
-					<td><b>
-							<input type="text" id="harga" name="txtHargaBeli" size="25" maxlength="12" autocomplete="off" />
-							Jumlah :
-							<input class="angkaC" name="txtJumlah" size="3" maxlength="4" value="1" onblur="if (value == '') {value = '1'}" onfocus="if (value == '1') {value =''}" />
-							<input name="btnTambah" type="submit" style="cursor:pointer;" value=" Tambah " />
-						</b></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td><i><strong>Note : </strong>Klik Tambah agar data barang bertambah di <strong>DAFTAR BARANG</strong></i></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td bgcolor="#F5F5F5"><strong>DATA TRANSAKSI </strong></td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td width="15%"><strong>No. Pengadaan </strong></td>
-					<td width="1%"><strong>:</strong></td>
-					<td width="75%"><input name="txtNomor" value="<?php echo $noPengadaan; ?>" size="25" maxlength="20" readonly="readonly" /></td>
-				</tr>
-				<tr>
-					<td><strong>Tanggal Pengadaan </strong></td>
-					<td><strong>:</strong></td>
-					<td><input type="text" name="txtTanggal" id="date" class="tcal" value="<?php echo IndonesiaTgl($tglTransaksi); ?>" size="25" maxlength="20" /></td>
-				</tr>
-				<tr>
-					<td><strong>Jenis Pengadaan </strong></td>
-					<td><strong>:</strong></td>
-					<td><b>
-							<select name="cmbJenis" data-live-search="true" class="selectpicker">
-								<option value="Kosong"> Pilih Jenis Pembayaran </option>
-								<?php
-								include_once "library/inc.pilihan.php";
-								foreach ($jenisPengadaan as $nilai) {
-									if ($dataJenis == $nilai) {
-										$cek = " selected";
-									} else {
-										$cek = "";
-									}
-									echo "<option value='$nilai' $cek>$nilai</option>";
-								}
-								?>
-							</select>
-						</b></td>
-				</tr>
-				<tr>
-					<td><strong>Keterangan</strong></td>
-					<td><strong>:</strong></td>
-					<td><input name="txtKeterangan" value="<?php echo $dataKeterangan; ?>" size="25" maxlength="100" autocomplete="off" /></td>
-				</tr>
-				<tr>
-					<td><strong>Departemen </strong></td>
-					<td><strong>:</strong></td>
-					<td>
-						<select name="cmbDepartemen" onchange="javascript:submitform();" data-live-search="true" class="selectpicker">
-							<option value="">Semua</option>
+									?>
+								</select>
+							</div>
+						</div>
+					</div>
+					<label for="cmbSupplier" class="col-lg-2 control-label"> Supplier (Asal Barang) </label>
+					<div class="col-lg-4" style="display: block; margin-bottom: 10px;">
+						<select name="cmbSupplier" type="text" data-live-search="true" class="selectpicker form-control" autocomplete="off">
+							<option value=""> Pilih Supplier </option>
 							<?php
-							$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
+							$mySql = "SELECT * FROM supplier ORDER BY kd_supplier";
 							$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
 							while ($myData = mysql_fetch_array($myQry)) {
-								if ($dataDepartemen == $myData['kd_departemen']) {
+								if ($dataSupplier == $myData['kd_supplier']) {
 									$cek = " selected";
 								} else {
 									$cek = "";
 								}
-								echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
+								echo "<option value='$myData[kd_supplier]' $cek>$myData[nm_supplier]</option>";
 							}
-							$mySql = "";
 							?>
 						</select>
-					</td>
-				</tr>
-				<tr>
-					<td><strong>Lokasi Penempatan </strong></td>
-					<td><strong>:</strong></td>
-					<td><b>
-							<select name="cmbLokasi" data-live-search="true" class="selectpicker">
-								<option value=""> Pilih Lokasi </option>
-								<?php
-								// Menampilkan data Lokasi dengan filter Nama Departemen yang dipilih
-								$comboSql = "SELECT * FROM lokasi WHERE kd_departemen='$dataDepartemen' ORDER BY kd_lokasi";
-								$comboQry = mysql_query($comboSql, $koneksidb) or die("Gagal Query" . mysql_error());
-								while ($comboData = mysql_fetch_array($comboQry)) {
-									if ($dataLokasi == $comboData['kd_lokasi']) {
-										$cek = " selected";
-									} else {
-										$cek = "";
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group">
+					<label for="txtHargaBeli" class="col-lg-2 control-label">Harga Barang/ Beli (Rp.)</label>
+					<div class="col-lg-4" style="border-radius: 5px; margin-bottom: 20px;">
+						<input type="text" id="harga" name="txtHargaBeli" autocomplete="off">
+						Jumlah :
+						<input class="angkaC" name="txtJumlah" size="3" maxlength="4" value="1" onblur="if (value == '') {value = '1'}" onfocus="if (value == '1') {value =''}" />
+						<input name="btnTambah" type="submit" style="cursor:pointer;" value=" Tambah " style="display: block; margin-bottom: 60px;" />
+						<td><i><strong>Note : </strong>Klik Tambah agar data barang bertambah di <strong>DAFTAR BARANG</strong></i></td>
+					</div>
+				</div>
+				<div class="form-group">
+					<label id="tag" class="col-lg-12 control-label" style="border-radius: 5px; margin-bottom: 20px;">
+						<ins><span class="glyphicon glyphicon-wrench">&nbsp;</span> DATA TRANSAKSI </ins></label>
+				</div>
+				<div class="form-group">
+					<label for="txtNomor" class="col-lg-2 control-label">No. Pengadaan</label>
+					<div class="col-lg-4">
+						<input class="form-control" name="txtNomor" id="txtNomor" value="<?php echo $noTransaksi; ?>" readonly autocomplete="off" style="display: block; margin-bottom: 12px;">
+					</div>
+					<div class="form-group">
+						<label for="date" class="col-lg-2 control-label">Tanggal Pengadaan</label>
+						<div class="col-lg-4">
+							<input id="date" class="form-control" name="txtTanggal" placeholder="dd-mm-yyyy" value="<?php echo $tglTransaksi; ?>" autocomplete="off" style="display: block; margin-bottom: 12px;">
+						</div>
+						<div class="form-group">
+							<label for="cmbDepartemen" class="col-lg-2 control-label">Departemen</label>
+							<div class="col-lg-4" style="display: block; margin-bottom: 12px;">
+								<select name="cmbDepartemen" onchange="javascript:submitform();" data-live-search="true" class="selectpicker show-tick form-control" autocomplete="off">
+									<option value="">Pilih Departemen</option>
+									<?php
+									$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
+									$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
+									while ($myData = mysql_fetch_array($myQry)) {
+										if ($dataDepartemen == $myData['kd_departemen']) {
+											$cek = " selected";
+										} else {
+											$cek = "";
+										}
+										echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
 									}
-									echo "<option value='$comboData[kd_lokasi]' $cek> $comboData[nm_lokasi]</option>";
-								}
-								?>
-							</select>
-						</b></td>
-				</tr>
-				<tr>
-					<td><strong>Nomor Resi</strong></td>
-					<td><strong>:</strong></td>
-					<td><input name="txtNomorResi" value="<?php echo $dataNomorResi; ?>" size="25" maxlength="100" autocomplete="off" /></td>
-				</tr>
-				<tr>
-					<td><b>Kwitansi / Nota</b></td>
-					<td><b>:</b></td>
-					<td>
-						<div style="display: flex; flex-wrap: wrap; gap: 10px;">
-							<?php
-							$ex = explode(';', $kwitansi); // Memisahkan nama file
-							for ($i = 0; $i < count($ex); $i++) {
-								if ($ex[$i] != '') {
-									echo "<a target='_BLANK' href='user_data/" . $ex[$i] . "'>
-                            			<img style='border: 1px solid #ddd; border-radius: 5px; padding: 5px;' width='150px' src='user_data/" . $ex[$i] . "'>
-                          				</a>";
-								}
-							}
-							?>
-						</div>
-						<input type="file" id="files" name="files[]" multiple>
-					</td>
-				</tr>
-				<tr>
-					<td><b>BAST Pengadaan Barang</b></td>
-					<td><b>:</b></td>
-					<td>
-						<div style="display: flex; flex-wrap: wrap; gap: 10px;">
-							<?php
-							$ex = explode(';', $fotoBast); // Memisahkan nama file
-							for ($i = 0; $i < count($ex); $i++) {
-								if ($ex[$i] != '') {
-									echo "<a target='_BLANK' href='user_data/" . $ex[$i] . "'>
-                            			<img style='border: 1px solid #ddd; border-radius: 5px; padding: 5px;' width='150px' src='user_data/" . $ex[$i] . "'>
-                          				</a>";
-								}
-							}
-							?>
-						</div>
-						<input type="file" id="files1" name="files1[]" multiple>
-					</td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-			</table>
+									$mySql = "";
+									?>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="cmbLokasi" class="col-lg-2 control-label">Lokasi Penempatan</label>
+								<div class="col-lg-4" style="display: block; margin-bottom: 12px;">
+									<select name="cmbLokasi" data-live-search="true" class="selectpicker show-tick form-control" autocomplete="off">
+										<option value=""> Pilih Lokasi </option>
+										<?php
+										// Menampilkan data Lokasi dengan filter Nama Departemen yang dipilih
+										$comboSql = "SELECT * FROM lokasi WHERE kd_departemen='$dataDepartemen' ORDER BY kd_lokasi";
+										$comboQry = mysql_query($comboSql, $koneksidb) or die("Gagal Query" . mysql_error());
+										while ($comboData = mysql_fetch_array($comboQry)) {
+											if ($dataLokasi == $comboData['kd_lokasi']) {
+												$cek = " selected";
+											} else {
+												$cek = "";
+											}
+											echo "<option value='$comboData[kd_lokasi]' $cek> $comboData[nm_lokasi]</option>";
+										}
+										?>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="cmbJenis" class="col-lg-2 control-label">Jenis Pengadaan</label>
+									<div class="col-lg-4" style="display: block; margin-bottom: 12px;">
+										<select name="cmbJenis" data-live-search="true" class="selectpicker show-tick form-control" autocomplete="off">
+											<option value=""> Pilih Jenis Pembayaran </option>
+											<?php
+											include_once "library/inc.pilihan.php";
+											foreach ($jenisPengadaan as $nilai) {
+												echo "<option value='$nilai'>$nilai</option>";
+											}
+											?>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="txtKeterangan" class="col-lg-2 control-label">Keterangan</label>
+										<div class="col-lg-4">
+											<input class="form-control" name="txtKeterangan" id="txtKeterangan" value="<?php echo $dataKeterangan; ?>" autocomplete="off" style="display: block; margin-bottom: 12px;">
+										</div>
+										<div class="form-group">
+											<label for="file" class="col-lg-2 control-label">Kwitansi / Nota</label>
+											<div class="col-lg-4">
+												<input type="file" class="form-control" name="files[]" autocomplete="off" style="display: block; margin-bottom: 10px;">
+											</div>
+											<div class="form-group">
+												<label for="txtNomorResi" class="col-lg-2 control-label">Nomor Resi</label>
+												<div class="col-lg-4">
+													<input class="form-control" name="txtNomorResi" id="txtNomorResi" value="<?php echo $dataNomorResi; ?>" autocomplete="off" style="display: block; margin-bottom: 12px;">
+												</div>
+												<?php if (isset($_SESSION["SES_PETUGAS"])) { ?>
+													<div class="form-group">
+														<label for="file" class="col-lg-2 control-label">BAST</label>
+														<div class="col-lg-4" style="border-radius: 5px; margin-bottom: 20px;">
+															<input type="file" class="form-control" name="files1[]" autocomplete="off" style="display: block; margin-bottom: 10px;">
+														<?php } ?>
+														</div>
+													</div>
 
-			<table class="table-list" width="900" border="0" cellspacing="1" cellpadding="2">
-				<tr>
-					<th colspan="8">DAFTAR BARANG</th>
-				</tr>
-				<tr>
-					<td width="20" align="center" bgcolor="#CCCCCC"><strong>No</strong></td>
-					<td width="59" bgcolor="#CCCCCC"><strong>Kode </strong></td>
-					<td width="257" bgcolor="#CCCCCC"><strong>Nama Barang </strong></td>
-					<td width="189" bgcolor="#CCCCCC"><strong>Supplier</strong></td>
-					<td width="115" align="right" bgcolor="#CCCCCC"><strong>Harga (Rp) </strong></td>
-					<td width="48" align="right" bgcolor="#CCCCCC"><strong>Jumlah</strong></td>
-					<td width="125" align="right" bgcolor="#CCCCCC"><strong>Total Biaya (Rp)</strong></td>
-					<td width="39" align="center" bgcolor="#CCCCCC">&nbsp;</td>
-				</tr>
-				<?php
-				//  tabel menu 
-				$tmpSql = "SELECT tmp_pengadaan.*, barang.nm_barang, supplier.kd_supplier FROM tmp_pengadaan
+		</form>
+	</div>
+
+	<table class="table-list" width="900" border="0" cellspacing="1" cellpadding="2">
+		<tr>
+			<th colspan="8">DAFTAR BARANG</th>
+		</tr>
+		<tr>
+			<td width="20" align="center" bgcolor="#CCCCCC"><strong>No</strong></td>
+			<td width="59" bgcolor="#CCCCCC"><strong>Kode </strong></td>
+			<td width="257" bgcolor="#CCCCCC"><strong>Nama Barang </strong></td>
+			<td width="189" bgcolor="#CCCCCC"><strong>Supplier</strong></td>
+			<td width="115" align="right" bgcolor="#CCCCCC"><strong>Harga (Rp) </strong></td>
+			<td width="48" align="right" bgcolor="#CCCCCC"><strong>Jumlah</strong></td>
+			<td width="125" align="right" bgcolor="#CCCCCC"><strong>Total Biaya (Rp)</strong></td>
+			<td width="39" align="center" bgcolor="#CCCCCC">&nbsp;</td>
+		</tr>
+		<?php
+		//  tabel menu 
+		$tmpSql = "SELECT tmp_pengadaan.*, barang.nm_barang, supplier.kd_supplier FROM tmp_pengadaan
 				LEFT JOIN barang ON tmp_pengadaan.kd_barang = barang.kd_barang
 				LEFT JOIN supplier ON tmp_pengadaan.kd_supplier = supplier.kd_supplier
 			    WHERE tmp_pengadaan.kd_petugas='$userLogin' AND tmp_pengadaan.no_pengadaan = '$Kode' ORDER BY id";
-				$tmpQry = mysql_query($tmpSql, $koneksidb) or die("Gagal Query Tmp" . mysql_error());
-				$nomor = 0;
-				$subTotal = 0;
-				$totalBelanja = 0;
-				$qtyItem = 0;
-				while ($tmpData = mysql_fetch_array($tmpQry)) {
-					$ID				= $tmpData['id'];
-					$qtyItem		= $qtyItem + $tmpData['jumlah'];
-					$subTotal		= $tmpData['harga_beli'] * $tmpData['jumlah']; // Harga beli dari tabel tmp_pengadaan (harga terbaru yang diinput)
-					$totalBelanja	= $totalBelanja + $subTotal;
-					$nomor++;
-					// gradasi warna
-					if ($nomor % 2 == 1) {
-						$warna = "";
-					} else {
-						$warna = "#F5F5F5";
-					}
-				?>
-					<tr bgcolor="<?php echo $warna; ?>">
-						<td align="center"><?php echo $nomor; ?></td>
-						<td><?php echo $tmpData['kd_barang']; ?></td>
-						<td><?php echo $tmpData['nm_barang']; ?></td>
-						<td>
-							<select name="cmbVendor[<?php echo $tmpData['kd_barang']; ?>]" data-live-search="true" class="selectpicker show-tick form-control">
-								<option value=""> Pilih Vendor Service </option>
-								<?php
-								$mySql = "SELECT * FROM supplier ORDER BY kd_supplier";
-								$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
-								while ($myData = mysql_fetch_array($myQry)) {
-									if ($tmpData['kd_supplier'] == $myData['kd_supplier']) {
-										$cek = " selected";
-									} else {
-										$cek = "";
-									}
-									echo "<option value='$myData[kd_supplier]' $cek>$myData[nm_supplier]</option>";
-								}
-								?>
-							</select>
-						</td>
-						<td align="right" bgcolor="<?php echo $warna; ?>"><input type="text" name="hargaBeli[<?php echo $tmpData['kd_barang']; ?>]" size="10"
-								<?php if ($tmpData['harga_beli'] == 0 || $tmpData['harga_beli'] == '') : ?>
-								placeholder="0"
-								<?php else : ?>
-								value="<?php echo $tmpData['harga_beli']; ?>"
-								<?php endif; ?>>
-						</td>
-						<td align="center" bgcolor="<?php echo $warna; ?>"><input type="text" name="jumlahBarang[<?php echo $tmpData['kd_barang']; ?>]" value="<?php echo $tmpData['jumlah']; ?>" size="3" autocomplete="off" /></td>
-						<td align="right" bgcolor="<?php echo $warna; ?>"><?php echo format_angka($subTotal); ?></td>
-						<td align="center" bgcolor="#FFFFCC"><a href="index.php?open=Pengadaan-Edit&Kode=<?php echo $Kode ?>&Act=Delete&ID=<?php echo $ID; ?>" onclick="return confirm('ANDA YAKIN AKAN MENGHAPUS DATA INI ... ?')" type="button" class="btn btn-danger btn-sm" target="_self"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
-					</tr>
-				<?php
-				} ?>
-				<tr>
-					<td colspan="5" align="right" bgcolor="#CCCCCC"><b> GRAND TOTAL : </b></td>
-					<td align="right" bgcolor="#CCCCCC"><strong><?php echo $qtyItem; ?></strong></td>
-					<td align="right" bgcolor="#CCCCCC"><strong>Rp. <?php echo format_angka($totalBelanja); ?></strong></td>
-					<td align="center" bgcolor="#CCCCCC">&nbsp;</td>
-				</tr>
-				<tr>
-					<td colspan="8">&nbsp;</td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td colspan="4" align="center">
-						<button type="submit" name="btnSimpan" class="btn btn-success">
-							<span class="glyphicon glyphicon-floppy-save" aria-hidden="true">&nbsp;</span><b>UBAH</b>
-						</button>
-						<button type="submit" name="btnKembali" class="btn btn-danger">
-							<span class="glyphicon glyphicon-chevron-left" aria-hidden="true">&nbsp;</span><b>KEMBALI</b>
-						</button>
-					</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-			</table>
-		</form>
+		$tmpQry = mysql_query($tmpSql, $koneksidb) or die("Gagal Query Tmp" . mysql_error());
+		$nomor = 0;
+		$subTotal = 0;
+		$totalBelanja = 0;
+		$qtyItem = 0;
+		while ($tmpData = mysql_fetch_array($tmpQry)) {
+			$ID				= $tmpData['id'];
+			$qtyItem		= $qtyItem + $tmpData['jumlah'];
+			$subTotal		= $tmpData['harga_beli'] * $tmpData['jumlah']; // Harga beli dari tabel tmp_pengadaan (harga terbaru yang diinput)
+			$totalBelanja	= $totalBelanja + $subTotal;
+			$nomor++;
+			// gradasi warna
+			if ($nomor % 2 == 1) {
+				$warna = "";
+			} else {
+				$warna = "#F5F5F5";
+			}
+		?>
+			<tr bgcolor="<?php echo $warna; ?>">
+				<td align="center"><?php echo $nomor; ?></td>
+				<td><?php echo $tmpData['kd_barang']; ?></td>
+				<td><?php echo $tmpData['nm_barang']; ?></td>
+				<td>
+					<select name="cmbVendor[<?php echo $tmpData['kd_barang']; ?>]" data-live-search="true" class="selectpicker show-tick form-control">
+						<option value=""> Pilih Vendor Service </option>
+						<?php
+						$mySql = "SELECT * FROM supplier ORDER BY kd_supplier";
+						$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
+						while ($myData = mysql_fetch_array($myQry)) {
+							if ($tmpData['kd_supplier'] == $myData['kd_supplier']) {
+								$cek = " selected";
+							} else {
+								$cek = "";
+							}
+							echo "<option value='$myData[kd_supplier]' $cek>$myData[nm_supplier]</option>";
+						}
+						?>
+					</select>
+				</td>
+				<td align="right" bgcolor="<?php echo $warna; ?>"><input type="text" name="hargaBeli[<?php echo $tmpData['kd_barang']; ?>]" size="10"
+						<?php if ($tmpData['harga_beli'] == 0 || $tmpData['harga_beli'] == '') : ?>
+						placeholder="0"
+						<?php else : ?>
+						value="<?php echo $tmpData['harga_beli']; ?>"
+						<?php endif; ?>>
+				</td>
+				<td align="center" bgcolor="<?php echo $warna; ?>"><input type="text" name="jumlahBarang[<?php echo $tmpData['kd_barang']; ?>]" value="<?php echo $tmpData['jumlah']; ?>" size="3" autocomplete="off" /></td>
+				<td align="right" bgcolor="<?php echo $warna; ?>"><?php echo format_angka($subTotal); ?></td>
+				<td align="center" bgcolor="#FFFFCC"><a href="index.php?open=Pengadaan-Edit&Kode=<?php echo $Kode ?>&Act=Delete&ID=<?php echo $ID; ?>" onclick="return confirm('ANDA YAKIN AKAN MENGHAPUS DATA INI ... ?')" type="button" class="btn btn-danger btn-sm" target="_self"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+			</tr>
+		<?php
+		} ?>
+		<tr>
+			<td colspan="5" align="right" bgcolor="#CCCCCC"><b> GRAND TOTAL : </b></td>
+			<td align="right" bgcolor="#CCCCCC"><strong><?php echo $qtyItem; ?></strong></td>
+			<td align="right" bgcolor="#CCCCCC"><strong>Rp. <?php echo format_angka($totalBelanja); ?></strong></td>
+			<td align="center" bgcolor="#CCCCCC">&nbsp;</td>
+		</tr>
+		<tr>
+			<td colspan="8">&nbsp;</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td colspan="4" align="center">
+				<button type="submit" name="btnSimpan" class="btn btn-success">
+					<span class="glyphicon glyphicon-floppy-save" aria-hidden="true">&nbsp;</span><b>UBAH</b>
+				</button>
+				<button type="submit" name="btnKembali" class="btn btn-danger">
+					<span class="glyphicon glyphicon-chevron-left" aria-hidden="true">&nbsp;</span><b>KEMBALI</b>
+				</button>
+			</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+	</table>
+	</form>
 	</div>

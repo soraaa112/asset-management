@@ -1,11 +1,11 @@
 <body>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
 	<?php
 	include_once "library/inc.seslogin.php";
 
@@ -55,6 +55,11 @@
 		}
 	} // Penutup Tombol Simpan
 
+	if (isset($_POST['btnKembali'])) {
+
+		echo "<meta http-equiv='refresh' content='0; url=?open=Kategori-Data'>";
+	}
+
 	# TAMPILKAN DATA LOGIN UNTUK DIEDIT
 	$Kode	 = $_GET['Kode'];
 	$mySql	 = "SELECT * FROM kategori WHERE kd_kategori='$Kode'";
@@ -65,37 +70,45 @@
 	$dataKode	= $myData['kd_kategori'];
 	$dataNama	= isset($_POST['txtNama']) ? $_POST['txtNama'] : $myData['nm_kategori'];
 	$dataDeskripsi	= isset($_POST['txtDeskripsi']) ? $_POST['txtDeskripsi'] : $myData['deskripsi'];
+
 	?>
-	<form action="<?php $_SERVER['PHP_SELF']; ?>" method="post" name="form1">
-		<table class="table-list" width="100%">
-			<tr>
-				<th colspan="3">UBAH KATEGORI </th>
-			</tr>
-			<tr>
-				<td width="15%"><b>Kode</b></td>
-				<td width="1%"><b>:</b></td>
-				<td width="84%"><input name="textfield" value="<?php echo $dataKode; ?>" size="25" maxlength="4" readonly="readonly" />
-					<input name="txtKode" type="hidden" value="<?php echo $dataKode; ?>" />
-				</td>
-			</tr>
-			<tr>
-				<td><b>Nama Kategori </b></td>
-				<td><b>:</b></td>
-				<td><input name="txtNama" type="text" value="<?php echo $dataNama; ?>" size="25" maxlength="100" /> </td>
-			</tr>
-			<tr>
-				<td><b>Deskripsi </b></td>
-				<td><b>:</b></td>
-				<td><input name="txtDeskripsi" type="text" value="<?php echo $dataDeskripsi; ?>" size="25" maxlength="100" /> </td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td><input type="submit" name="btnSimpan" value=" Simpan ">
-					<a href="?open=Kategori-Data">
-						<input type="button" value=" Kembali " />
-					</a>
-				</td>
-			</tr>
-		</table>
-	</form>
+
+	</SCRIPT>
+	<div class="table-border">
+		<h2>UBAH DATA KATEGORI</h2>
+		<form action="<?php $_SERVER['PHP_SELF']; ?>" method="post" name="form1" target="_self" enctype="multipart/form-data">
+			<div class="row">
+				<div class="form-group">
+					<label for="textfield" class="col-lg-2 control-label">Kode</label>
+					<div class="col-lg-4">
+						<input type="text" class="form-control" name="textfield" id="textfield" value="<?php echo $dataKode; ?>" autocomplete="off" style="display: block; margin-bottom: 10px;">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group">
+					<label for="txtNama" class="col-lg-2 control-label">Nama Kategori</label>
+					<div class="col-lg-4">
+						<input type="text" class="form-control" name="txtNama" id="txtNama" value="<?php echo $dataNama; ?>" autocomplete="off" style="display: block; margin-bottom: 10px;">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group">
+					<label for="txtDeskripsi" class="col-lg-2 control-label">Deskripsi</label>
+					<div class="col-lg-4">
+						<input type="text" class="form-control" name="txtDeskripsi" id="txtDeskripsi" value="<?php echo $dataDeskripsi; ?>" autocomplete="off" style="display: block; margin-bottom: 10px;">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-lg-offset-2 col-lg-10" style="display: block; margin-top: 40px;">
+						<button type="submit" name="btnSimpan" class="btn btn-success">
+							<span class="glyphicon glyphicon-floppy-saved" aria-hidden="true">&nbsp;</span><b>SIMPAN</b>
+						</button>
+						<button type="submit" name="btnKembali" class="btn btn-danger">
+							<span class="glyphicon glyphicon-chevron-left" aria-hidden="true">&nbsp;</span><b>KEMBALI</b>
+						</button>
+					</div>
+				</div>
+		</form>
+	</div>

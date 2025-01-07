@@ -194,81 +194,44 @@
 	</SCRIPT>
 	<div class="table-border">
 		<h2>MUTASI (PEMINDAHAN) BARANG</h2>
-		<form action="<?php $_SERVER['PHP_SELF']; ?>" target="_self" method="post" name="form1" enctype="multipart/form-data">
-			<table width="900" cellpadding="3" cellspacing="1" class="table-list">
-				<tr>
-					<td bgcolor="#F5F5F5"><strong>INPUT BARANG </strong></td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td><strong>Kode/ Label Barang </strong></td>
-					<td><strong>:</strong></td>
-					<td><b>
-							<input name="txtKodeInventaris" id="txtKodeInventaris" value="<?php echo $KodeInventaris; ?>" size="23" maxlength="12" />
-						</b></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td><strong>:</strong></td>
-					<td><input name="txtNamaBrg" id="txtNamaBrg" value="<?php echo $txtNamaBrg; ?>" size="26" maxlength="100" disabled="disabled" /></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td><a href="javaScript: void(0)" target="_self" onclick="window.open('pencarian_barang_terpakai.php')"><strong>Pencarian Barang</strong></a>,<strong></strong> untuk membaca label barang </td>
-				</tr>
-				<tr>
-					<td bgcolor="#F5F5F5"><strong>PENEMPATAN BARU </strong></td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-				<tr class="table-list">
-					<td><strong>Departemen </strong></td>
-					<td><strong>:</strong></td>
-					<td>
-						<?php if (isset($_SESSION["SES_PETUGAS"]) && ($_SESSION["SES_UNIT"])) { ?>
-							<select name="cmbDepartemen" onchange="javascript:submitform();" data-live-search="true" class="selectpicker">
-								<?php
-								$mySql = "SELECT * FROM departemen WHERE nm_departemen='$_SESSION[SES_UNIT]' ORDER BY kd_departemen";
-								$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
-								while ($myData = mysql_fetch_array($myQry)) {
-									if ($dataDepartemen == $myData['kd_departemen']) {
-										$cek = " selected";
-									} else {
-										$cek = "";
-									}
-									echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
-								}
-								$mySql = "";
-								?>
-							</select>
-						<?php } else { ?>
-							<select name="cmbDepartemen" onchange="javascript:submitform();" data-live-search="true" class="selectpicker">
-								<option value="Semua">Semua</option>
-								<?php
-								$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
-								$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
-								while ($myData = mysql_fetch_array($myQry)) {
-									if ($dataDepartemen == $myData['kd_departemen']) {
-										$cek = " selected";
-									} else {
-										$cek = "";
-									}
-									echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
-								}
-								$mySql = "";
-								?>
-							</select>
-						<?php } ?>
-					</td>
-				</tr>
-				<tr>
-					<td><strong>Lokasi </strong></td>
-					<td><strong>:</strong></td>
-					<td><b>
+		<form action="<?php $_SERVER['PHP_SELF']; ?>" method="post" name="form1" target="_self" enctype="multipart/form-data">
+			<div class="row">
+				<div class="form-group">
+					<label id="tag" class="col-lg-12 control-label" style="border-radius: 5px; margin-bottom: 12px;">
+						<ins><span class="glyphicon glyphicon-briefcase">&nbsp;</span>INPUT BARANG</ins></label>
+				</div>
+				<div class="form-group">
+					<label for="txtKodeInventaris" class="col-lg-2 control-label">Kode Barang</label>
+					<div class="col-lg-4" style="border-radius: 5px; margin-bottom: 1px;">
+						<div class="input-group">
+							<span class="input-group-btn">
+								<a href="javaScript: void(0)" onclick="window.open('pencarian_barang_service.php')" target="_self">
+									<button class="btn btn-info" type="button">Pencarian Barang</button>
+								</a>
+							</span>
+							<input type="text" class="form-control" name="txtKodeInventaris" id="txtKodeInventaris" maxlength="12" placeholder="Search for kode barang..." autocomplete="off">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="txtNamaBrg" class="col-lg-2 control-label">Nama Barang</label>
+						<div class="col-lg-4" style="border-radius: 5px; margin-bottom: 5px;">
+							<input type="text" class="form-control" name="txtNamaBrg" id="txtNamaBrg" placeholder="Nama Barang..." readonly>
+						</div>
+						<div class="col-lg-offset-2 col-lg-10" style="border-radius: 5px; margin-bottom: 20px;">
+							<button type="submit" name="btnTambah" class="btn btn-primary btn-sm">
+								<span class="glyphicon glyphicon-plus" aria-hidden="true">&nbsp;</span><b>TAMBAH</b>
+							</button>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-12 control-label" style="border-radius: 5px; margin-bottom: 12px;">
+							<span class="glyphicon glyphicon-wrench">&nbsp;</span><ins>PENEMPATAN BARU</ins></label>
+					</div>
+					<div class="form-group">
+						<label for="cmbLokasi" class="col-lg-2 control-label">Lokasi</label>
+						<div class="col-lg-4" style="display: block; margin-bottom: 12px;">
 							<?php if (isset($_SESSION["SES_PETUGAS"]) && ($_SESSION["SES_UNIT"])) { ?>
-								<select name="cmbLokasi" data-live-search="true" class="selectpicker">
+								<select name="cmbLokasi" data-live-search="true" class="selectpicker form-control">
 									<option value="Kosong"> Pilih Lokasi </option>
 									<?php
 									// Menampilkan data Lokasi dengan filter Nama Departemen yang dipilih
@@ -285,7 +248,7 @@
 									?>
 								</select>
 							<?php } else { ?>
-								<select name="cmbLokasi" data-live-search="true" class="selectpicker">
+								<select name="cmbLokasi" data-live-search="true" class="selectpicker form-control">
 									<option value="Kosong"> Pilih Lokasi </option>
 									<?php
 									// Menampilkan data Lokasi dengan filter Nama Departemen yang dipilih
@@ -302,67 +265,85 @@
 									?>
 								</select>
 							<?php }  ?>
-						</b></td>
-				</tr>
-				<tr class="table-list">
-					<td><strong>Keterangan</strong></td>
-					<td><strong>:</strong></td>
-					<td><input name="txtKeterangan2" value="<?php echo $dataKeterangan2; ?>" size="26" maxlength="100" /></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td bgcolor="#F5F5F5"><strong>MUTASI</strong></td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td width="15%"><strong>No. Mutasi </strong></td>
-					<td width="1%"><strong>:</strong></td>
-					<td width="78%"><input name="textfield" size="26" value="<?php echo $dataKode; ?>" readonly="readonly" /></td>
-					<input name="txtKode" type="hidden" value="<?php echo $dataKode; ?>" />
-				</tr>
-				<tr>
-					<td><strong>Tgl. Mutasi </strong></td>
-					<td><strong>:</strong></td>
-					<td><input name="txtTanggal" id="date" class="tcal" size="26" value="<?php echo $dataTglMutasi; ?>" readonly="readonly" /></td>
-				</tr>
-				<tr>
-					<td><strong>Keterangan</strong></td>
-					<td><strong>:</strong></td>
-					<td><input name="txtKeterangan" value="<?php echo $dataKeterangan; ?>" size="26" maxlength="100" /></td>
-				</tr>
-				<tr>
-					<td><b>Form / Bast</b></td>
-					<td><b>:</b></td>
-					<td><input type='file' name="files[]" multiple />
-						<?php
-						$ex = explode(';', $myData['form_bast']);
-						$no = 1;
-						for ($i = 0; $i < count($ex); $i++) {
-							if ($ex[$i] != '') {
-								echo "<a target='_BLANK' href='user_data/" . $ex[$i] . "'><img style='margin-left:5px' width='100px' src='user_data/" . $ex[$i] . "'></a>";
-							}
-							$no++;
-						}
-						?>
-					</td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td><input name="btnSimpan" type="submit" style="cursor:pointer;" value=" Simpan Data " />
-						<input name="btnKembali" type="submit" value=" Kembali " />
-					</td>
-				</tr>
-			</table>
+						</div>
+						<div class="form-group">
+							<label for="cmbDepartemen" class="col-lg-2 control-label">Departemen</label>
+							<div class="col-lg-4" style="display: block; margin-bottom: 12px;">
+								<?php if (isset($_SESSION["SES_PETUGAS"]) && ($_SESSION["SES_UNIT"])) { ?>
+									<select name="cmbDepartemen" onchange="javascript:submitform();" data-live-search="true" class="selectpicker form-control">
+										<?php
+										$mySql = "SELECT * FROM departemen WHERE nm_departemen='$_SESSION[SES_UNIT]' ORDER BY kd_departemen";
+										$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
+										while ($myData = mysql_fetch_array($myQry)) {
+											if ($dataDepartemen == $myData['kd_departemen']) {
+												$cek = " selected";
+											} else {
+												$cek = "";
+											}
+											echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
+										}
+										$mySql = "";
+										?>
+									</select>
+								<?php } else { ?>
+									<select name="cmbDepartemen" onchange="javascript:submitform();" data-live-search="true" class="selectpicker form-control">
+										<option value="Semua">Semua</option>
+										<?php
+										$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
+										$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
+										while ($myData = mysql_fetch_array($myQry)) {
+											if ($dataDepartemen == $myData['kd_departemen']) {
+												$cek = " selected";
+											} else {
+												$cek = "";
+											}
+											echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
+										}
+										$mySql = "";
+										?>
+									</select>
+								<?php } ?>
+							</div>
+							<div class="form-group">
+								<label for="txtKeterangan2" class="col-lg-2 control-label">Keterangan</label>
+								<div class="col-lg-4">
+									<input class="form-control" name="txtKeterangan2" id="txtKeterangan2" value="<?php echo $dataKeterangan2; ?>" style="display: block; margin-bottom: 20px;">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-lg-12 control-label" style="border-radius: 5px; margin-bottom: 12px;">
+									<span class="glyphicon glyphicon-wrench">&nbsp;</span><ins>MUTASI</ins></label>
+							</div>
+							<div class="form-group">
+								<label for="txtNomor" class="col-lg-2 control-label">No. Mutasi</label>
+								<div class="col-lg-4">
+									<input class="form-control" name="txtNomor" id="txtNomor" value="<?php echo $dataKode; ?>" readonly style="display: block; margin-bottom: 12px;">
+								</div>
+								<label for="date" class="col-lg-2 control-label">Tgl. Mutasi</label>
+								<div class="col-lg-4">
+									<input id="date" type="text" class="form-control" name="txtTanggal" value="<?php echo $dataTglMutasi; ?>" placeholder="dd-mm-yyyy" autocomplete="off" style="display: block; margin-bottom: 12px;">
+								</div>
+								<div class="form-group">
+									<label for="txtKeterangan" class="col-lg-2 control-label">Keterangan</label>
+									<div class="col-lg-4">
+										<input class="form-control" name="txtKeterangan" id="txtKeterangan" value="<?php echo $dataKeterangan; ?>" style="display: block; margin-bottom: 12px;">
+									</div>
+									<label for="files" class="col-lg-2 control-label">Form / BAST</label>
+									<div class="col-lg-4">
+										<input class="form-control" type="file" id="files" name="files[]" multiple style="display: block; margin-bottom: 12px;">
+
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-lg-offset-2 col-lg-10" style="display: block; margin-top: 40px;">
+										<button type="submit" name="btnSimpan" class="btn btn-success">
+											<span class="glyphicon glyphicon-floppy-saved" aria-hidden="true">&nbsp;</span><b>SIMPAN</b>
+										</button>
+										<button type="submit" name="btnKembali" class="btn btn-danger">
+											<span class="glyphicon glyphicon-chevron-left" aria-hidden="true">&nbsp;</span><b>KEMBALI</b>
+										</button>
+									</div>
+								</div>
+							</div>
 		</form>
 	</div>
