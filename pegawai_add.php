@@ -103,7 +103,7 @@
 			<div class="row">
 				<label for="textfield" class="col-lg-2 control-label">Kode</label>
 				<div class="col-lg-4">
-					<input type="text" class="form-control" name="textfield" id="textfield" value="<?php echo $dataKode; ?>" autocomplete="off">
+					<input type="text" class="form-control" name="textfield" id="textfield" value="<?php echo $dataKode; ?>" readonly autocomplete="off">
 				</div>
 				<label for="txtAlamat" class="col-lg-2 control-label">Alamat</label>
 				<div class="col-lg-4">

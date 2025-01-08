@@ -51,6 +51,11 @@
 		}
 	} // Penutup Tombol Simpan
 
+	if (isset($_POST['btnKembali'])) {
+
+		echo "<meta http-equiv='refresh' content='0; url=?open=Departemen-Data'>";
+	}
+
 	# MASUKKAN DATA KE VARIABEL
 	// Supaya saat ada pesan error, data di dalam form tidak hilang. Jadi, tinggal meneruskan/memperbaiki yg salah
 	$dataKode	= buatKode4($koneksidb, "departemen", "D");
@@ -66,7 +71,7 @@
 				<div class="form-group">
 					<label for="textfield" class="col-lg-2 control-label">Kode</label>
 					<div class="col-lg-4">
-						<input type="text" class="form-control" name="textfield" id="textfield" value="<?php echo $dataKode; ?>" autocomplete="off" style="display: block; margin-bottom: 10px;">
+						<input type="text" class="form-control" name="textfield" id="textfield" value="<?php echo $dataKode; ?>" readonly autocomplete="off" style="display: block; margin-bottom: 10px;">
 					</div>
 				</div>
 			</div>

@@ -59,6 +59,11 @@ if (isset($_POST['btnSimpan'])) {
 	}
 } // Penutup Tombol Simpan
 
+if (isset($_POST['btnKembali'])) {
+
+	echo "<meta http-equiv='refresh' content='0;  url=?open=Vendor-Data'>";
+}
+
 # MASUKKAN DATA DARI FORM KE VARIABEL TEMPORARY (SEMENTARA)
 $dataKode	= buatKode("vendor_service", "V");
 $dataNama	= isset($_POST['txtNama']) ? $_POST['txtNama'] : '';

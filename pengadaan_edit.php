@@ -354,10 +354,12 @@
 				<div class="form-group">
 					<label for="txtHargaBeli" class="col-lg-2 control-label">Harga Barang/ Beli (Rp.)</label>
 					<div class="col-lg-4" style="border-radius: 5px; margin-bottom: 20px;">
-						<input type="text" id="harga" name="txtHargaBeli" autocomplete="off">
+						<input type="text" id="harga" name="txtHargaBeli" autocomplete="off" style="margin-bottom: 5px;">
 						Jumlah :
 						<input class="angkaC" name="txtJumlah" size="3" maxlength="4" value="1" onblur="if (value == '') {value = '1'}" onfocus="if (value == '1') {value =''}" />
-						<input name="btnTambah" type="submit" style="cursor:pointer;" value=" Tambah " style="display: block; margin-bottom: 60px;" />
+						<button type="submit" name="btnTambah" class="btn btn-primary btn-sm">
+							<span class="glyphicon glyphicon-plus" aria-hidden="true">&nbsp;</span><b>TAMBAH</b>
+						</button>
 						<td><i><strong>Note : </strong>Klik Tambah agar data barang bertambah di <strong>DAFTAR BARANG</strong></i></td>
 					</div>
 				</div>
@@ -368,7 +370,7 @@
 				<div class="form-group">
 					<label for="txtNomor" class="col-lg-2 control-label">No. Pengadaan</label>
 					<div class="col-lg-4">
-						<input class="form-control" name="txtNomor" id="txtNomor" value="<?php echo $noTransaksi; ?>" readonly autocomplete="off" style="display: block; margin-bottom: 12px;">
+						<input class="form-control" name="txtNomor" id="txtNomor" value="<?php echo $noPengadaan; ?>" readonly autocomplete="off" style="display: block; margin-bottom: 12px;">
 					</div>
 					<div class="form-group">
 						<label for="date" class="col-lg-2 control-label">Tanggal Pengadaan</label>

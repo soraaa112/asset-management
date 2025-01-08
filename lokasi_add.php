@@ -77,7 +77,7 @@
 				<div class="form-group">
 					<label for="textfield" class="col-lg-2 control-label">Kode</label>
 					<div class="col-lg-4">
-						<input type="text" class="form-control" name="textfield" id="textfield" value="<?php echo $dataKode; ?>" autocomplete="off" style="display: block; margin-bottom: 10px;">
+						<input type="text" class="form-control" name="textfield" id="textfield" value="<?php echo $dataKode; ?>" readonly autocomplete="off" style="display: block; margin-bottom: 10px;">
 					</div>
 				</div>
 			</div>

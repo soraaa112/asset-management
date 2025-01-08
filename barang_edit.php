@@ -107,31 +107,63 @@
 			exit;
 		}
 	} // Penutup POST
+
+	if (isset($_POST['btnKembali'])) {
+
+		echo "<meta http-equiv='refresh' content='0; url=?open=Barang-Data'>";
+	}
+
+
 	?>
-	<form action="<?php $_SERVER['PHP_SELF']; ?>" method="post" name="frmedit" enctype="multipart/form-data">
-		<table class="table-list" width="100%" style="margin-top:0px;">
-			<tr>
-				<th colspan="3">LENGKAPI DATA ASET BARANG </th>
-			</tr>
-			<tr>
-				<td width="17%"><strong>Kode </strong></td>
-				<td width="1%"><strong>:</strong></td>
-				<td width="82%"><input name="textfield" value="<?php echo $dataKode; ?>" size="26" maxlength="10" readonly="readonly" />
-					<input name="txtKode" type="hidden" value="<?php echo $dataKode; ?>" />
-				</td>
-			</tr>
-			<tr>
-				<td><b>Type</b></td>
-				<td><strong>:</strong></td>
-				<td><input name="txtNama" value="<?php echo $dataNama; ?>" size="26" maxlength="100" />
-					<input name="txtLama" type="hidden" value="<?php echo $myData['nm_barang']; ?>" />
-				</td>
-			</tr>
-			<tr>
-				<td><strong>Satuan</strong></td>
-				<td><strong>:</strong></td>
-				<td><b>
-						<select name="cmbSatuan" data-live-search="true" class="selectpicker">
+
+	</SCRIPT>
+	<div class="table-border">
+		<h2>LENGKAPI DATA ASET BARANG</h2>
+		<form action="<?php $_SERVER['PHP_SELF']; ?>" method="post" name="form1" target="_self" enctype="multipart/form-data">
+			<div class="row">
+				<div class="form-group">
+					<label for="textfield" class="col-lg-2 control-label">Kode</label>
+					<div class="col-lg-4">
+						<input type="text" class="form-control" name="textfield" id="textfield" readonly value="<?php echo $dataKode; ?>" autocomplete="off" style="display: block; margin-bottom: 10px;">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group">
+					<label for="txtNama" class="col-lg-2 control-label">Type</label>
+					<div class="col-lg-4">
+						<input name="txtNama" value="<?php echo $dataNama; ?>" class="form-control" autocomplete="off" style="display: block; margin-bottom: 10px;" />
+						<input name="txtLama" type="hidden" value="<?php echo $myData['nm_barang']; ?>" />
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group">
+					<label for="cmbKategori" class="col-lg-2 control-label">Kategori</label>
+					<div class="col-lg-4" style="display: block; margin-bottom: 10px;">
+						<select name="cmbKategori" id="cmbKategori" data-live-search="true" class="selectpicker show-tick form-control" autocomplete="off">
+							<option value="Kosong"> Pilih Kategori </option>
+							<?php
+							$mySql = "SELECT * FROM kategori ORDER BY nm_kategori";
+							$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
+							while ($myDataa = mysql_fetch_array($myQry)) {
+								if ($myDataa['kd_kategori'] == $dataKategori) {
+									$cek = " selected";
+								} else {
+									$cek = "";
+								}
+								echo "<option value='$myDataa[kd_kategori]' $cek>$myDataa[nm_kategori] </option>";
+							}
+							?>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group">
+					<label for="cmbSatuan" class="col-lg-2 control-label">Satuan</label>
+					<div class="col-lg-4" style="display: block; margin-bottom: 10px;">
+						<select name="cmbSatuan" id="cmbSatuan" data-live-search="true" class="selectpicker show-tick form-control" autocomplete="off">
 							<option value="Kosong"> Pilih Satuan </option>
 							<?php
 							include_once "library/inc.pilihan.php";
@@ -145,53 +177,24 @@
 							}
 							?>
 						</select>
-					</b></td>
-			</tr>
-			<tr>
-				<td><strong>Kategori </strong></td>
-				<td><strong>:</strong></td>
-				<td><select name="cmbKategori" data-live-search="true" class="selectpicker">
-						<option value="Kosong"> Pilih Kategori </option>
-						<?php
-						$mySql = "SELECT * FROM kategori ORDER BY nm_kategori";
-						$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
-						while ($myDataa = mysql_fetch_array($myQry)) {
-							if ($myDataa['kd_kategori'] == $dataKategori) {
-								$cek = " selected";
-							} else {
-								$cek = "";
-							}
-							echo "<option value='$myDataa[kd_kategori]' $cek>$myDataa[nm_kategori] </option>";
-						}
-						?>
-					</select></td>
-			</tr>
-			<tr>
-				<td><b>Foto (Multiple Upload)</b></td>
-				<td><b>:</b></td>
-				<td>
-					<?php
-					$ex = explode(';', $myData['foto']);
-					$no = 1;
-					for ($i = 0; $i < count($ex); $i++) {
-						if ($ex[$i] != '') {
-							echo "<a target='_BLANK' href='user_data/" . $ex[$i] . "'><img style='margin-right:5px' width='50px' src='user_data/" . $ex[$i] . "'></a>";
-						}
-						$no++;
-					}
-					?>
-					<br>
-					<input type='file' name="files[]" multiple />
-				</td>
-			</tr>
-			<tr>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td><input type="submit" name="btnSimpan" value=" Simpan " style="cursor:pointer;">
-					<a href="?open=Barang-Data">
-						<input type="button" value=" Kembali " />
-					</a>
-				</td>
-			</tr>
-		</table>
-	</form>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group">
+					<label for="file" class="col-lg-2 control-label">Foto (Multiple Upload)</label>
+					<div class="col-lg-4">
+						<input type="file" class="form-control" name="files[]" autocomplete="off" style="display: block; margin-bottom: 10px;">
+
+					</div>
+				</div>
+				<div class="col-lg-offset-2 col-lg-10" style="display: block; margin-top: 40px;">
+					<button type="submit" name="btnSimpan" class="btn btn-success">
+						<span class="glyphicon glyphicon-floppy-saved" aria-hidden="true">&nbsp;</span><b>SIMPAN</b>
+					</button>
+					<button type="submit" name="btnKembali" class="btn btn-danger">
+						<span class="glyphicon glyphicon-chevron-left" aria-hidden="true">&nbsp;</span><b>KEMBALI</b>
+					</button>
+				</div>
+		</form>
+	</div>
