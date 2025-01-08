@@ -39,30 +39,52 @@
 	$SQL 		= "";
 	$SQLPage	= "";
 	$bulan		= DATE('m');
+	$tahun		= DATE('Y');
 
 	# BACA VARIABEL KATEGORI
 	$kodeKategori 	= isset($_GET['kodeKategori']) ? $_GET['kodeKategori'] : 'Semua';
 	$kodeKategori 	= isset($_POST['cmbKategori']) ? $_POST['cmbKategori'] : $kodeKategori;
 	$status 		= isset($_POST['cmbstatusBarang']) ? $_POST['cmbstatusBarang'] : '';
 	$cmbBulan 		= isset($_POST['cmbBulan']) ? $_POST['cmbBulan'] : $bulan;
+	$cmbTahun 		= isset($_POST['cmbTahun']) ? $_POST['cmbTahun'] : $tahun;
 
 	# PENCARIAN DATA BERDASARKAN FILTER DATA (Kode Type Kamar)
 	if (isset($_POST['btnCari'])) {
-		if (trim($_POST['cmbBulan']) == "Semua") {
-			if (trim($_POST['cmbKategori']) == "Semua") {
-				//Query #1 (all)
-				$filterSQL   = "";
+		if (trim($_POST['cmbTahun']) == "Semua") {
+			if (trim($_POST['cmbBulan']) == "Semua") {
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE barang.kd_kategori ='$kodeKategori'";
+				}
 			} else {
-				//Query #2 (filter)
-				$filterSQL   = "WHERE barang.kd_kategori ='$kodeKategori'";
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "WHERE month(barang_mati.no.barang_mati) = '$cmbBulan'";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE month(barang_mati.no.barang_mati) = '$cmbBulan' AND barang.kd_kategori ='$kodeKategori'";
+				}
 			}
 		} else {
-			if (trim($_POST['cmbKategori']) == "Semua") {
-				//Query #1 (all)
-				$filterSQL   = "WHERE month(barang_mati.tanggal) = '$cmbBulan'";
+			if (trim($_POST['cmbBulan']) == "Semua") {
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "WHERE year(barang_mati.no.barang_mati) = '$cmbTahun'";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE year(barang_mati.no.barang_mati) = '$cmbTahun' AND barang.kd_kategori ='$kodeKategori'";
+				}
 			} else {
-				//Query #2 (filter)
-				$filterSQL   = "WHERE month(barang_mati.tanggal) = '$cmbBulan' AND barang.kd_kategori ='$kodeKategori'";
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "WHERE year(barang_mati.no.barang_mati) = '$cmbTahun' AND month(barang_mati.no.barang_mati) = '$cmbBulan'";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE year(barang_mati.no.barang_mati) = '$cmbTahun' AND month(barang_mati.no.barang_mati) = '$cmbBulan' AND barang.kd_kategori ='$kodeKategori'";
+				}
 			}
 		}
 	} else {
@@ -126,6 +148,18 @@
 								<option value="10" <?php echo ($cmbBulan == "10") ? "selected" : "" ?>> Oktober </option>
 								<option value="11" <?php echo ($cmbBulan == "11") ? "selected" : "" ?>> November </option>
 								<option value="12" <?php echo ($cmbBulan == "12") ? "selected" : "" ?>> Desember </option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td width="134"><strong> Tahun </strong></td>
+						<td width="5"><strong>:</strong></td>
+						<td width="741">
+							<select name="cmbTahun" data-live-search="true" class="selectpicker">
+								<option value="Semua"> Pilih Tahun </option>
+								<?php for ($i = 2023; $i <= $tahun; $i++) : ?>
+									<option value="<?php echo $i ?>" <?php echo ($cmbTahun == "$i") ? "selected" : "" ?>> <?php echo $i ?> </option>
+								<?php endfor; ?>
 							</select>
 						</td>
 					</tr>
@@ -199,7 +233,7 @@
 						$Kode = $myData['no_barang_mati'];
 						$note = $myData['nm_barang'];
 
-						
+
 						// gradasi warna
 						if ($nomor % 2 == 1) {
 							$warna = "";
@@ -215,13 +249,15 @@
 							<td><?php echo $myData['nm_barang']; ?></td>
 							<td><?php echo $myData['kerusakan']; ?></td>
 							<td><?php
-							$ex = explode(';', $myData['foto']);
-							$no = 1;
-							for ($i = 0; $i < count($ex); $i++) {
-								if ($ex[$i] != '') {
-									echo "<a target='_BLANK' href='user_data/" . $ex[$i] . "'>" . $ex[$i] . "</a>, ";}
-									$no++;}?>
-									</td>
+								$ex = explode(';', $myData['foto']);
+								$no = 1;
+								for ($i = 0; $i < count($ex); $i++) {
+									if ($ex[$i] != '') {
+										echo "<a target='_BLANK' href='user_data/" . $ex[$i] . "'>" . $ex[$i] . "</a>, ";
+									}
+									$no++;
+								} ?>
+							</td>
 							<td><?php echo $myData['status_approval_barang_mati']; ?></td>
 							<?php if ($myData['status_approval_barang_mati'] == 'Belum Approve') { ?>
 								<?php if (isset($_SESSION["SES_PETUGAS"])) { ?>
@@ -243,7 +279,7 @@
 										<a type="button" href="?open=Approval-Barang-Mati&Kode=<?php echo $Kode; ?>" target="_self" class="btn btn-info btn-sm" title="Approve Data"><i class="fa fa-check"></i></a>
 									</td>
 								<?php } ?>
-							<?php } else {?>
+							<?php } else { ?>
 								<?php if (isset($_SESSION["SES_PETUGAS"])) { ?>
 									<td>
 										<a href="?open=Barang-Mati-Hapus&Kode=<?php echo $Kode; ?>" target="_self" onclick="return confirm('ANDA YAKIN AKAN MENGHAPUS DATA BARANG MATI INI ... ?')" title="Hapus Data">
@@ -264,7 +300,7 @@
 									</td>
 								<?php } ?>
 							<?php } ?>
-					<?php } ?>
+						<?php } ?>
 				</tbody>
 			</table>
 		</div>

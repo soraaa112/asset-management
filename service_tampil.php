@@ -39,30 +39,52 @@
 	$SQL 		= "";
 	$SQLPage	= "";
 	$bulan		= DATE('m');
+	$tahun		= DATE('Y');
 
 	# BACA VARIABEL KATEGORI
 	$kodeKategori 	= isset($_GET['kodeKategori']) ? $_GET['kodeKategori'] : 'Semua';
 	$kodeKategori 	= isset($_POST['cmbKategori']) ? $_POST['cmbKategori'] : $kodeKategori;
 	$status 		= isset($_POST['cmbstatusBarang']) ? $_POST['cmbstatusBarang'] : '';
 	$cmbBulan 		= isset($_POST['cmbBulan']) ? $_POST['cmbBulan'] : $bulan;
+	$cmbTahun 		= isset($_POST['cmbTahun']) ? $_POST['cmbTahun'] : $tahun;
 
 	# PENCARIAN DATA BERDASARKAN FILTER DATA (Kode Type Kamar)
 	if (isset($_POST['btnCari'])) {
-		if (trim($_POST['cmbBulan']) == "Semua") {
-			if (trim($_POST['cmbKategori']) == "Semua") {
-				//Query #1 (all)
-				$filterSQL   = "";
+		if (trim($_POST['cmbTahun']) == "Semua") {
+			if (trim($_POST['cmbBulan']) == "Semua") {
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE barang.kd_kategori ='$kodeKategori'";
+				}
 			} else {
-				//Query #2 (filter)
-				$filterSQL   = "WHERE barang.kd_kategori ='$kodeKategori'";
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "WHERE month(services.tgl_kirim) = '$cmbBulan'";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE month(services.tgl_kirim) = '$cmbBulan' AND barang.kd_kategori ='$kodeKategori'";
+				}
 			}
 		} else {
-			if (trim($_POST['cmbKategori']) == "Semua") {
-				//Query #1 (all)
-				$filterSQL   = "WHERE month(services.tgl_kirim) = '$cmbBulan'";
+			if (trim($_POST['cmbBulan']) == "Semua") {
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "WHERE year(services.tgl_kirim) = '$cmbTahun'";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE year(services.tgl_kirim) = '$cmbTahun' AND barang.kd_kategori ='$kodeKategori'";
+				}
 			} else {
-				//Query #2 (filter)
-				$filterSQL   = "WHERE month(services.tgl_kirim) = '$cmbBulan' AND barang.kd_kategori ='$kodeKategori'";
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "WHERE year(services.tgl_kirim) = '$cmbTahun' AND month(services.tgl_kirim) = '$cmbBulan'";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE year(services.tgl_kirim) = '$cmbTahun' AND month(services.tgl_kirim) = '$cmbBulan' AND barang.kd_kategori ='$kodeKategori'";
+				}
 			}
 		}
 	} else {
@@ -128,6 +150,18 @@
 								<option value="10" <?php echo ($cmbBulan == "10") ? "selected" : "" ?>> Oktober </option>
 								<option value="11" <?php echo ($cmbBulan == "11") ? "selected" : "" ?>> November </option>
 								<option value="12" <?php echo ($cmbBulan == "12") ? "selected" : "" ?>> Desember </option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td width="134"><strong> Tahun </strong></td>
+						<td width="5"><strong>:</strong></td>
+						<td width="741">
+							<select name="cmbTahun" data-live-search="true" class="selectpicker">
+								<option value="Semua"> Pilih Tahun </option>
+								<?php for ($i = 2023; $i <= $tahun; $i++) : ?>
+									<option value="<?php echo $i ?>" <?php echo ($cmbTahun == "$i") ? "selected" : "" ?>> <?php echo $i ?> </option>
+								<?php endfor; ?>
 							</select>
 						</td>
 					</tr>

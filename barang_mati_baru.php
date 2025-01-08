@@ -111,13 +111,13 @@
 	</SCRIPT>
 	<div class="table-border">
 		<h2>TRANSAKSI BARANG MATI</h2>
-		<form action="<?php $_SERVER['PHP_SELF']; ?>" method="post" name="form1" target="_self" 		enctype="multipart/form-data">
-					<div class="row">
-					<div class="form-group">
+		<form action="<?php $_SERVER['PHP_SELF']; ?>" method="post" name="form1" target="_self" enctype="multipart/form-data">
+			<div class="row">
+				<div class="form-group">
 					<label id="tag" class="col-lg-12 control-label" style="border-radius: 5px; margin-bottom: 12px;">
 						<ins><span class="glyphicon glyphicon-briefcase">&nbsp;</span>INPUT BARANG</ins></label>
-					</div>
-					<div class="form-group">
+				</div>
+				<div class="form-group">
 					<label for="txtKodeInventaris" class="col-lg-2 control-label">Kode Barang</label>
 					<div class="col-lg-4">
 						<div class="input-group">
@@ -130,55 +130,55 @@
 						</div>
 					</div>
 					<div class="form-group">
-					<label for="txtDeskripsi" class="col-lg-2 control-label">Kerusakan</label>
-					<div class="col-lg-4">
-						<input type="text" class="form-control" name="txtDeskripsi" id="txtDeskripsi" autocomplete="off" style="display: block; margin-bottom: 10px;">
-					</div>
-					<div class="form-group">
-					<label for="txtNamaBrg" class="col-lg-2 control-label">Nama Barang</label>
-					<div class="col-lg-4">
-						<input type="text" class="form-control" name="txtNamaBrg" id="txtNamaBrg" placeholder="Nama Barang..." style="display: block; margin-bottom: 10px;" readonly>
-					</div>
-					<div class="form-group">
-					<label for="txtCustomer" class="col-lg-2 control-label">Pelanggan</label>
-					<div class="col-lg-4">
-						<input type="text" class="form-control" name="txtCustomer" id="txtCustomer" style="display: block; margin-bottom: 10px;">
-					</div>
-						<label for="txtNomor" class="col-lg-2 control-label">Nomor Barang Mati</label>
-					<div class="col-lg-4">
-						<input class="form-control" name="txtNomor" id="txtNomor" value="<?php echo $noTransaksi; ?>" style="display: block; margin-bottom: 10px;" readonly>
-					</div>
-					<div class="form-group">
-					<label for="txtKeterangan" class="col-lg-2 control-label">Keterangan</label>
-					<div class="col-lg-4">
-						<input type="text" class="form-control" name="txtKeterangan" id="txtKeterangan" autocomplete="off" style="display: block; margin-bottom: 10px;">
-					</div>
-					<div class="form-group">
-					<label for="serial_number" class="col-lg-2 control-label">Serial Number</label>
-					<div class="col-lg-4">
-						<input type="text" class="form-control" name="serial_number" id="serial_number"
-						style="display: block; margin-bottom: 10px;">
-					</div>
-					<label for="date" class="col-lg-2 control-label">Tanggal</label>
-					<div class="col-lg-4">
-						<input id="date" class="form-control" name="txtTanggal" placeholder="dd-mm-yyyy" autocomplete="off" style="display: block; margin-bottom: 10px;">
-					</div>
-				
-					</div>
-					<label for="date" class="col-lg-2 control-label">Foto (Multiple Upload)</label>
-					<div class="col-lg-4">
-						<input id="date" class="form-control"  type='file' name="files[]" multiple style="display: block; margin-bottom: 10px;">
-					</div>
-					<div class="form-group">
-					<div class="col-lg-offset-2 col-lg-10" style="display: block; margin-top: 20px;">
-						<button type="submit" name="btnSimpan" class="btn btn-success">
-							<span class="glyphicon glyphicon-floppy-saved" aria-hidden="true">&nbsp;</span><b>SIMPAN</b>
-						</button>
-						<button type="submit" name="btnKembali" class="btn btn-danger">
-							<span class="glyphicon glyphicon-chevron-left" aria-hidden="true">&nbsp;</span><b>KEMBALI</b>
-						</button>
-					</div>
-				</div>
-			</div>
+						<label for="txtDeskripsi" class="col-lg-2 control-label">Kerusakan</label>
+						<div class="col-lg-4">
+							<input type="text" class="form-control" name="txtDeskripsi" id="txtDeskripsi" autocomplete="off" style="display: block; margin-bottom: 10px;">
+						</div>
+						<div class="form-group">
+							<label for="txtNamaBrg" class="col-lg-2 control-label">Nama Barang</label>
+							<div class="col-lg-4">
+								<input type="text" class="form-control" name="txtNamaBrg" id="txtNamaBrg" placeholder="Nama Barang..." style="display: block; margin-bottom: 10px;" readonly>
+							</div>
+							<div class="form-group">
+								<label for="txtCustomer" class="col-lg-2 control-label">Pelanggan</label>
+								<div class="col-lg-4">
+									<input type="text" class="form-control" name="txtCustomer" id="txtCustomer" style="display: block; margin-bottom: 10px;">
+								</div>
+								<label for="txtNomor" class="col-lg-2 control-label">Nomor Barang Mati</label>
+								<div class="col-lg-4">
+									<input class="form-control" name="txtNomor" id="txtNomor" value="<?php echo $noTransaksi; ?>" style="display: block; margin-bottom: 10px;" readonly>
+								</div>
+								<div class="form-group">
+									<label for="txtKeterangan" class="col-lg-2 control-label">Keterangan</label>
+									<div class="col-lg-4">
+										<input type="text" class="form-control" name="txtKeterangan" id="txtKeterangan" autocomplete="off" style="display: block; margin-bottom: 10px;">
+									</div>
+									<div class="form-group">
+										<label for="serial_number" class="col-lg-2 control-label">Serial Number</label>
+										<div class="col-lg-4">
+											<input type="text" class="form-control" name="serial_number" id="serial_number"
+												style="display: block; margin-bottom: 10px;">
+										</div>
+										<label for="date" class="col-lg-2 control-label">Tanggal</label>
+										<div class="col-lg-4">
+											<input id="date" class="form-control" name="txtTanggal" placeholder="dd-mm-yyyy" autocomplete="off" style="display: block; margin-bottom: 10px;">
+										</div>
+
+									</div>
+									<label for="date" class="col-lg-2 control-label">Foto (Multiple Upload)</label>
+									<div class="col-lg-4">
+										<input id="date" class="form-control" type='file' name="files[]" multiple style="display: block; margin-bottom: 10px;">
+									</div>
+									<div class="form-group">
+										<div class="col-lg-offset-2 col-lg-10" style="display: block; margin-top: 40px;">
+											<button type="submit" name="btnSimpan" class="btn btn-success">
+												<span class="glyphicon glyphicon-floppy-saved" aria-hidden="true">&nbsp;</span><b>SIMPAN</b>
+											</button>
+											<button type="submit" name="btnKembali" class="btn btn-danger">
+												<span class="glyphicon glyphicon-chevron-left" aria-hidden="true">&nbsp;</span><b>KEMBALI</b>
+											</button>
+										</div>
+									</div>
+								</div>
 		</form>
 	</div>
