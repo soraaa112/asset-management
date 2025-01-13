@@ -292,7 +292,7 @@
 				<div class="form-group">
 					<label for="cmbKategori" class="col-lg-2 control-label">Kategori</label>
 					<div class="col-lg-4" style="display: block; margin-bottom: 10px;">
-						<select name="cmbKategori" data-live-search="true" class="selectpicker form-control" id="cmbKategori" autocomplete="off">
+						<select name="cmbKategori" onchange="javascript:submitform();" data-live-search="true" class="selectpicker form-control" id="cmbKategori" autocomplete="off">
 							<option value=""> Pilih Kategori </option>
 							<?php
 							$daftarSql = "SELECT * FROM kategori  ORDER BY kd_kategori";
@@ -312,7 +312,7 @@
 						<div class="form-group">
 							<label for="cmbBarang" class="col-lg-2 control-label">Type</label>
 							<div class="col-lg-4" style="display: block; margin-bottom: 10px;">
-								<select name="cmbBarang" data-live-search="true" class="selectpicker form-control" autocomplete="off">
+								<select name="cmbBarang" onchange="javascript:submitform();" data-live-search="true" class="selectpicker form-control" autocomplete="off">
 									<option value=""> Pilih Barang </option>
 									<?php
 									$mySql = "SELECT * FROM barang WHERE kd_kategori='$dataKategori' ORDER BY nm_barang ASC";

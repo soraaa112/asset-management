@@ -274,22 +274,22 @@
 							<input class="form-control" name="txtNomor" id="txtNomor" value="<?php echo $dataKode; ?>" readonly>
 						</div>
 						<div class="form-group">
-							<label for="cmbPegawai" class="col-lg-2 control-label">Data Pegawai</label>
+							<label for="cmbDepartemen" class="col-lg-2 control-label">Departemen</label>
 							<div class="col-lg-4" style="display: block; margin-bottom: 12px;">
-								<select name="cmbPegawai" data-live-search="true" class="selectpicker form-control">
-									<option value=""> Pilih Pegawai </option>
+								<select name="cmbDepartemen" onchange="javascript:submitform();" data-live-search="true" class="selectpicker form-control">
+									<option value="">Pilih Departemen</option>
 									<?php
-									// Menampilkan data Lokasi dengan filter Nama Departemen yang dipilih
-									$comboSql = "SELECT * FROM pegawai WHERE kd_departemen='$dataDepartemen' ORDER BY nm_pegawai ASC";
-									$comboQry = mysql_query($comboSql, $koneksidb) or die("Gagal Query" . mysql_error());
-									while ($comboData = mysql_fetch_array($comboQry)) {
-										if ($dataLokasi == $comboData['kd_pegawai']) {
+									$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
+									$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
+									while ($myData = mysql_fetch_array($myQry)) {
+										if ($dataDepartemen == $myData['kd_departemen']) {
 											$cek = " selected";
 										} else {
 											$cek = "";
 										}
-										echo "<option value='$comboData[kd_pegawai]' $cek> $comboData[nm_pegawai]</option>";
+										echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
 									}
+									$mySql = "";
 									?>
 								</select>
 							</div>
@@ -298,22 +298,22 @@
 								<input id="date" type="text" class="form-control" name="txtTanggal" value="<?php echo $dataTglTransaksi; ?>" placeholder="dd-mm-yyyy" autocomplete="off" style="display: block; margin-bottom: 12px;">
 							</div>
 							<div class="form-group">
-								<label for="cmbDepartemen" class="col-lg-2 control-label">Departemen</label>
+								<label for="cmbPegawai" class="col-lg-2 control-label">Data Pegawai</label>
 								<div class="col-lg-4" style="display: block; margin-bottom: 12px;">
-									<select name="cmbDepartemen" onchange="javascript:submitform();" data-live-search="true" class="selectpicker form-control">
-										<option value="">Pilih Departemen</option>
+									<select name="cmbPegawai" data-live-search="true" class="selectpicker form-control">
+										<option value=""> Pilih Pegawai </option>
 										<?php
-										$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
-										$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
-										while ($myData = mysql_fetch_array($myQry)) {
-											if ($dataDepartemen == $myData['kd_departemen']) {
+										// Menampilkan data Lokasi dengan filter Nama Departemen yang dipilih
+										$comboSql = "SELECT * FROM pegawai WHERE kd_departemen='$dataDepartemen' ORDER BY nm_pegawai ASC";
+										$comboQry = mysql_query($comboSql, $koneksidb) or die("Gagal Query" . mysql_error());
+										while ($comboData = mysql_fetch_array($comboQry)) {
+											if ($dataLokasi == $comboData['kd_pegawai']) {
 												$cek = " selected";
 											} else {
 												$cek = "";
 											}
-											echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
+											echo "<option value='$comboData[kd_pegawai]' $cek> $comboData[nm_pegawai]</option>";
 										}
-										$mySql = "";
 										?>
 									</select>
 								</div>
@@ -325,16 +325,15 @@
 									<div class="form-group">
 										<label for="files" class="col-lg-2 control-label">Form / BAST</label>
 										<div class="col-lg-4">
-											<input class="form-control" type="file" id="files" name="files[]" multiple style="display: block; margin-bottom: 15px;">
+											<input class="form-control" type="file" id="files" name="files[]" multiple style="display: block; margin-bottom: 12px;">
 										</div>
 										<label for="txtKeterangan" class="col-lg-2 control-label">Keterangan</label>
 										<div class="col-lg-4">
 											<input class="form-control" name="txtKeterangan" id="txtKeterangan" value="<?php echo $dataKeterangan; ?>" style="display: block; margin-bottom: 12px;">
 										</div>
 									</div>
-
 									<div class="form-group">
-										<div class="col-lg-offset-2 col-lg-10" style="display: block; margin-top: 30px;">
+										<div class="col-lg-offset-2 col-lg-10" style="display: block; margin-top: 40px; margin-bottom: 15px;">
 											<button type="submit" name="btnSimpan" class="btn btn-success">
 												<span class="glyphicon glyphicon-floppy-saved" aria-hidden="true">&nbsp;</span><b>SIMPAN</b>
 											</button>

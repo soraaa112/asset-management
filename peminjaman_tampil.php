@@ -12,7 +12,9 @@
 	$filterSQL  = "";
 	$SQL = "";
 	$SQLPage = "";
-	
+	$bulan		= DATE('m');
+	$tahun		= DATE('Y');
+
 	$userLogin  = $_SESSION['SES_LOGIN'];
 
 	if (isset($userLogin)) {
@@ -42,29 +44,60 @@
 	$status = isset($_GET['statusKembali']) ? $_GET['statusKembali'] : 'Semua';
 	$status = isset($_POST['cmbStatusKembali']) ? $_POST['cmbStatusKembali'] : $status;
 
+	$cmbBulan 		= isset($_POST['cmbBulan']) ? $_POST['cmbBulan'] : $bulan;
+	$cmbTahun 		= isset($_POST['cmbTahun']) ? $_POST['cmbTahun'] : $tahun;
 
 	# PENCARIAN DATA BERDASARKAN FILTER DATA (Kode Type Kamar)
 	if (isset($_POST['btnCari'])) {
 		if (trim($_POST['cmbDepartemen']) == "Semua") {
 			if ($_POST['cmbStatusKembali'] ==  "Semua") {
-				//Query #1 (all)
-				$filterSQL   = "";
+				if (trim($_POST['cmbTahun']) == "Semua") {
+					if (trim($_POST['cmbBulan']) == "Semua") {
+						//Query #1 (all)
+						$filterSQL   = "";
+					} else {
+						$filterSQL   = "AND peminjaman.status_kembali = '$status'";
+					}
+				} else {
+					if ($_POST['cmbStatusKembali'] ==  "Semua") {
+						//Query #1 (all)
+						$filterSQL   = "AND pegawai.kd_departemen ='$kodeDepartemen'";
+					} else {
+						$filterSQL   = "AND pegawai.kd_departemen ='$kodeDepartemen' AND peminjaman.status_kembali = '$status'";
+					}
+				}
 			} else {
-				$filterSQL   = "AND peminjaman.status_kembali = '$status'";
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "WHERE month(peminjaman.tgl_peminjaman) = '$cmbBulan'";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE month(peminjaman.tgl_peminjaman) = '$cmbBulan' AND barang.kd_kategori ='$kodeKategori'";
+				}
 			}
 		} else {
-			if ($_POST['cmbStatusKembali'] ==  "Semua") {
-				//Query #1 (all)
-				$filterSQL   = "AND pegawai.kd_departemen ='$kodeDepartemen'";
+			if (trim($_POST['cmbBulan']) == "Semua") {
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "WHERE year(peminjaman.tgl_peminjaman) = '$cmbTahun'";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE year(peminjaman.tgl_peminjaman) = '$cmbTahun' AND barang.kd_kategori ='$kodeKategori'";
+				}
 			} else {
-				$filterSQL   = "AND pegawai.kd_departemen ='$kodeDepartemen' AND peminjaman.status_kembali = '$status'";
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "WHERE year(peminjaman.tgl_peminjaman) = '$cmbTahun' AND month(peminjaman.tgl_peminjaman) = '$cmbBulan'";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE year(peminjaman.tgl_peminjaman) = '$cmbTahun' AND month(peminjaman.tgl_peminjaman) = '$cmbBulan' AND barang.kd_kategori ='$kodeKategori'";
+				}
 			}
 		}
 	} else {
 		//Query #1 (all)
 		$filterSQL   = "";
 	}
-
 	# Simpan Variabel TMP
 	$dataKataKunci = isset($_POST['txtKataKunci']) ? $_POST['txtKataKunci'] : '';
 	$dataStatus = isset($_POST['cmbStatusKembali']) ? $_POST['cmbStatusKembali'] : '';
@@ -143,6 +176,39 @@
 									echo "<option value='$nilai' $cek>$nilai</option>";
 								}
 								?>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td width="134"><strong> Bulan </strong></td>
+						<td width="5"><strong>:</strong></td>
+						<td width="741">
+							<select name="cmbBulan" data-live-search="true" class="selectpicker">
+								<option value="Semua"> Pilih Bulan </option>
+								<option value="01" <?php echo ($cmbBulan == "01") ? "selected" : "" ?>> Januari </option>
+								<option value="02" <?php echo ($cmbBulan == "02") ? "selected" : "" ?>> Februari </option>
+								<option value="03" <?php echo ($cmbBulan == "03") ? "selected" : "" ?>> Maret </option>
+								<option value="04" <?php echo ($cmbBulan == "04") ? "selected" : "" ?>> April </option>
+								<option value="05" <?php echo ($cmbBulan == "05") ? "selected" : "" ?>> Mei </option>
+								<option value="06" <?php echo ($cmbBulan == "06") ? "selected" : "" ?>> Juni </option>
+								<option value="07" <?php echo ($cmbBulan == "07") ? "selected" : "" ?>> Juli </option>
+								<option value="08" <?php echo ($cmbBulan == "08") ? "selected" : "" ?>> Agustus </option>
+								<option value="09" <?php echo ($cmbBulan == "09") ? "selected" : "" ?>> September </option>
+								<option value="10" <?php echo ($cmbBulan == "10") ? "selected" : "" ?>> Oktober </option>
+								<option value="11" <?php echo ($cmbBulan == "11") ? "selected" : "" ?>> November </option>
+								<option value="12" <?php echo ($cmbBulan == "12") ? "selected" : "" ?>> Desember </option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td width="134"><strong> Tahun </strong></td>
+						<td width="5"><strong>:</strong></td>
+						<td width="741">
+							<select name="cmbTahun" data-live-search="true" class="selectpicker">
+								<option value="Semua"> Pilih Tahun </option>
+								<?php for ($i = 2023; $i <= $tahun; $i++) : ?>
+									<option value="<?php echo $i ?>" <?php echo ($cmbTahun == "$i") ? "selected" : "" ?>> <?php echo $i ?> </option>
+								<?php endfor; ?>
 							</select>
 							<input name="btnCari" type="submit" value=" Tampilkan " />
 						</td>

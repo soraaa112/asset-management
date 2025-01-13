@@ -36,37 +36,83 @@
 	$filterSQL = "";
 	$SQL = "";
 	$SQLPage = "";
+	$bulan		= DATE('m');
+	$tahun		= DATE('Y');
 
 	# BACA VARIABEL KATEGORI
 	$kodeKategori = isset($_GET['kodeKategori']) ? $_GET['kodeKategori'] : 'Semua';
 	$kodeKategori = isset($_POST['cmbKategori']) ? $_POST['cmbKategori'] : $kodeKategori;
+	$cmbBulan 		= isset($_POST['cmbBulan']) ? $_POST['cmbBulan'] : $bulan;
+	$cmbTahun 		= isset($_POST['cmbTahun']) ? $_POST['cmbTahun'] : $tahun;
 
 	# PENCARIAN DATA BERDASARKAN FILTER DATA (Kode Type Kamar)
 	if (isset($_POST['btnCari'])) {
-		if (trim($_POST['cmbKategori']) == "Semua") {
-			//Query #1 (all)
-			$filterSQL   = "WHERE penempatan_item.status_aktif='Yes'";
+		if (trim($_POST['cmbTahun']) == "Semua") {
+			if (trim($_POST['cmbBulan']) == "Semua") {
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "WHERE penempatan_item.status_aktif='Yes'";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE barang.kd_kategori ='$kodeKategori' AND penempatan_item.status_aktif='Yes'";
+				}
+			} else {
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "WHERE month(penempatan.tgl_penempatan) = '$cmbBulan'";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE month(penempatan.tgl_penempatan) = '$cmbBulan' AND barang.kd_kategori ='$kodeKategori'";
+				}
+			}
 		} else {
-			//Query #2 (filter)
-			$filterSQL   = "WHERE barang.kd_kategori ='$kodeKategori' AND penempatan_item.status_aktif='Yes'";
+			if (trim($_POST['cmbBulan']) == "Semua") {
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "WHERE year(penempatan.tgl_penempatan) = '$cmbTahun'";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE year(penempatan.tgl_penempatan) = '$cmbTahun' AND barang.kd_kategori ='$kodeKategori'";
+				}
+			} else {
+				if (trim($_POST['cmbKategori']) == "Semua") {
+					//Query #1 (all)
+					$filterSQL   = "WHERE year(penempatan.tgl_penempatan) = '$cmbTahun' AND month(penempatan.tgl_penempatan) = '$cmbBulan'";
+				} else {
+					//Query #2 (filter)
+					$filterSQL   = "WHERE year(penempatan.tgl_penempatan) = '$cmbTahun' AND month(penempatan.tgl_penempatan) = '$cmbBulan' AND barang.kd_kategori ='$kodeKategori'";
+				}
+			}
 		}
 	} else {
 		//Query #1 (all)
-		$filterSQL   = "WHERE penempatan_item.status_aktif='Yes'";
+		$filterSQL   = "";
 	}
 
 	# UNTUK PAGING (PEMBAGIAN HALAMAN)
+
 	$row = 10;
 	$hal = isset($_GET['hal']) ? $_GET['hal'] : 0;
-	$pageSql = "SELECT penempatan_item.* FROM penempatan
+	if (isset($_POST['btnCari'])) {
+		$pageSql = "SELECT penempatan_item.*, penempatan.tgl_penempatan, barang.nm_barang FROM penempatan
 	LEFT JOIN penempatan_item ON penempatan.no_penempatan = penempatan_item.no_penempatan
 	LEFT JOIN barang_inventaris ON penempatan_item.kd_inventaris = barang_inventaris.kd_inventaris
 	LEFT JOIN barang ON barang_inventaris.kd_barang = barang.kd_barang
 	LEFT JOIN kategori ON barang.kd_kategori = kategori.kd_kategori
-	$filterSQL GROUP BY penempatan_item.no_penempatan ORDER BY penempatan_item.no_penempatan ASC";
-	$pageQry = mysql_query($pageSql, $koneksidb) or die("error paging: " . mysql_error());
-	$jml	 = mysql_num_rows($pageQry);
-	$max	 = ceil($jml / $row);
+	$filterSQL GROUP BY penempatan_item.no_penempatan ORDER BY penempatan_item.no_penempatan DESC";
+	} else {
+		$pageSql = "SELECT penempatan_item.*, penempatan.tgl_penempatan, barang.nm_barang FROM penempatan
+	LEFT JOIN penempatan_item ON penempatan.no_penempatan = penempatan_item.no_penempatan
+	LEFT JOIN barang_inventaris ON penempatan_item.kd_inventaris = barang_inventaris.kd_inventaris
+	LEFT JOIN barang ON barang_inventaris.kd_barang = barang.kd_barang
+	LEFT JOIN kategori ON barang.kd_kategori = kategori.kd_kategori
+	$filterSQL WHERE month(penempatan.tgl_penempatan) = '$bulan' 
+	GROUP BY penempatan_item.no_penempatan ORDER BY penempatan_item.no_penempatan DESC";
+	}
+	$pageQry 	= mysql_query($pageSql, $koneksidb) or die("error paging: " . mysql_error());
+	$jml	 	= mysql_num_rows($pageQry);
+	$max	 	= ceil($jml / $row);
+
 	?>
 	<div style="overflow-x:auto;">
 		<div class="table-border">
@@ -75,6 +121,39 @@
 				<table width="900" border="0" class="table-list">
 					<tr>
 						<td colspan="3" bgcolor="#F5F5F5"><strong>FILTER DATA </strong></td>
+					</tr>
+					<tr>
+						<td width="134"><strong> Bulan </strong></td>
+						<td width="5"><strong>:</strong></td>
+						<td width="741">
+							<select name="cmbBulan" data-live-search="true" class="selectpicker">
+								<option value="Semua"> Pilih Bulan </option>
+								<option value="01" <?php echo ($cmbBulan == "01") ? "selected" : "" ?>> Januari </option>
+								<option value="02" <?php echo ($cmbBulan == "02") ? "selected" : "" ?>> Februari </option>
+								<option value="03" <?php echo ($cmbBulan == "03") ? "selected" : "" ?>> Maret </option>
+								<option value="04" <?php echo ($cmbBulan == "04") ? "selected" : "" ?>> April </option>
+								<option value="05" <?php echo ($cmbBulan == "05") ? "selected" : "" ?>> Mei </option>
+								<option value="06" <?php echo ($cmbBulan == "06") ? "selected" : "" ?>> Juni </option>
+								<option value="07" <?php echo ($cmbBulan == "07") ? "selected" : "" ?>> Juli </option>
+								<option value="08" <?php echo ($cmbBulan == "08") ? "selected" : "" ?>> Agustus </option>
+								<option value="09" <?php echo ($cmbBulan == "09") ? "selected" : "" ?>> September </option>
+								<option value="10" <?php echo ($cmbBulan == "10") ? "selected" : "" ?>> Oktober </option>
+								<option value="11" <?php echo ($cmbBulan == "11") ? "selected" : "" ?>> November </option>
+								<option value="12" <?php echo ($cmbBulan == "12") ? "selected" : "" ?>> Desember </option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td width="134"><strong> Tahun </strong></td>
+						<td width="5"><strong>:</strong></td>
+						<td width="741">
+							<select name="cmbTahun" data-live-search="true" class="selectpicker">
+								<option value="Semua"> Pilih Tahun </option>
+								<?php for ($i = 2023; $i <= $tahun; $i++) : ?>
+									<option value="<?php echo $i ?>" <?php echo ($cmbTahun == "$i") ? "selected" : "" ?>> <?php echo $i ?> </option>
+								<?php endfor; ?>
+							</select>
+						</td>
 					</tr>
 					<tr>
 						<td width="134"><strong> Kategori </strong></td>
@@ -120,7 +199,9 @@
 				<tbody>
 					<?php
 					# Perintah untuk menampilkan data Transaksi penempatan, dilengkapi informasi Lokasi dan Departemen
-					$mySql = "SELECT penempatan_item.*, penempatan.*, departemen.nm_departemen, lokasi.nm_lokasi, barang.nm_barang FROM penempatan_item 
+
+					if (isset($_POST['btnCari'])) {
+						$mySql = "SELECT penempatan_item.*, penempatan.*, penempatan.tgl_penempatan, departemen.nm_departemen, lokasi.nm_lokasi, barang.nm_barang FROM penempatan_item 
 					LEFT JOIN penempatan ON penempatan_item.no_penempatan=penempatan.no_penempatan
 					LEFT JOIN barang_inventaris ON penempatan_item.kd_inventaris = barang_inventaris.kd_inventaris
 					LEFT JOIN barang ON barang_inventaris.kd_barang = barang.kd_barang
@@ -128,7 +209,20 @@
 					LEFT JOIN lokasi ON penempatan.kd_lokasi=lokasi.kd_lokasi 
 					LEFT JOIN departemen ON lokasi.kd_departemen = departemen.kd_departemen
 					$filterSQL
+					GROUP BY penempatan_item.no_penempatan 
+					ORDER BY penempatan_item.no_penempatan DESC";
+					} else {
+						$mySql = "SELECT penempatan_item.*, penempatan.*, penempatan.tgl_penempatan, departemen.nm_departemen, lokasi.nm_lokasi, barang.nm_barang FROM penempatan_item 
+					LEFT JOIN penempatan ON penempatan_item.no_penempatan=penempatan.no_penempatan
+					LEFT JOIN barang_inventaris ON penempatan_item.kd_inventaris = barang_inventaris.kd_inventaris
+					LEFT JOIN barang ON barang_inventaris.kd_barang = barang.kd_barang
+					LEFT JOIN kategori ON barang.kd_kategori = kategori.kd_kategori 
+					LEFT JOIN lokasi ON penempatan.kd_lokasi=lokasi.kd_lokasi 
+					LEFT JOIN departemen ON lokasi.kd_departemen = departemen.kd_departemen
+					$filterSQL
+					WHERE month(penempatan.tgl_penempatan) = '$bulan'
 					GROUP BY penempatan_item.no_penempatan ORDER BY penempatan_item.no_penempatan DESC";
+					}
 					$myQry = mysql_query($mySql, $koneksidb)  or die("Query salah : " . mysql_error());
 					$nomor = $hal;
 					while ($myData = mysql_fetch_array($myQry)) {
@@ -181,4 +275,3 @@
 			</table>
 		</div>
 	</div>
-	

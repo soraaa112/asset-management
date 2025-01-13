@@ -261,52 +261,52 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="cmbLokasi" class="col-lg-2 control-label">Lokasi Penempatan</label>
+						<label for="cmbDepartemen" class="col-lg-2 control-label">Departemen</label>
 						<div class="col-lg-4" style="display: block; margin-bottom: 12px;">
-							<select name="cmbLokasi" id="cmbLokasi" data-live-search="true" class="selectpicker show-tick form-control">
-								<option value=""> Pilih Lokasi </option>
+							<select id="cmbDepartemen" name="cmbDepartemen" onchange="javascript:submitform();" data-live-search="true" class="selectpicker show-tick form-control" autocomplete="off">
+								<option value=""> Pilih Departemen </option>
 								<?php
-								// Menampilkan data Lokasi dengan filter Nama Departemen yang dipilih
-								$comboSql = "SELECT * FROM lokasi WHERE kd_departemen='$dataDepartemen' ORDER BY kd_lokasi";
-								$comboQry = mysql_query($comboSql, $koneksidb) or die("Gagal Query" . mysql_error());
-								while ($comboData = mysql_fetch_array($comboQry)) {
-									if ($dataLokasi == $comboData['kd_lokasi']) {
+								$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
+								$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
+								while ($myData = mysql_fetch_array($myQry)) {
+									if ($dataDepartemen == $myData['kd_departemen']) {
 										$cek = " selected";
 									} else {
 										$cek = "";
 									}
-									echo "<option value='$comboData[kd_lokasi]' $cek> $comboData[nm_lokasi]</option>";
+									echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
 								}
+								$mySql = "";
 								?>
 							</select>
 						</div>
 						<label for="files" class="col-lg-2 control-label">BAST</label>
 						<div class="col-lg-4">
-							<input class="form-control" type="file" id="files" name="files[]" multiple style="display: block; margin-bottom: 15px;">
+							<input class="form-control" type="file" id="files" name="files[]" multiple style="display: block; margin-bottom: 12px;">
 						</div>
 						<div class="form-group">
-							<label for="cmbDepartemen" class="col-lg-2 control-label">Departemen</label>
+							<label for="cmbLokasi" class="col-lg-2 control-label">Lokasi Penempatan</label>
 							<div class="col-lg-4" style="display: block; margin-bottom: 12px;">
-								<select id="cmbDepartemen" name="cmbDepartemen" onchange="javascript:submitform();" data-live-search="true" class="selectpicker show-tick form-control" autocomplete="off">
-									<option value=""> Pilih Departemen </option>
+								<select name="cmbLokasi" id="cmbLokasi" data-live-search="true" class="selectpicker show-tick form-control">
+									<option value=""> Pilih Lokasi </option>
 									<?php
-									$mySql = "SELECT * FROM departemen ORDER BY kd_departemen";
-									$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
-									while ($myData = mysql_fetch_array($myQry)) {
-										if ($dataDepartemen == $myData['kd_departemen']) {
+									// Menampilkan data Lokasi dengan filter Nama Departemen yang dipilih
+									$comboSql = "SELECT * FROM lokasi WHERE kd_departemen='$dataDepartemen' ORDER BY kd_lokasi";
+									$comboQry = mysql_query($comboSql, $koneksidb) or die("Gagal Query" . mysql_error());
+									while ($comboData = mysql_fetch_array($comboQry)) {
+										if ($dataLokasi == $comboData['kd_lokasi']) {
 											$cek = " selected";
 										} else {
 											$cek = "";
 										}
-										echo "<option value='$myData[kd_departemen]' $cek>$myData[nm_departemen]</option>";
+										echo "<option value='$comboData[kd_lokasi]' $cek> $comboData[nm_lokasi]</option>";
 									}
-									$mySql = "";
 									?>
 								</select>
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="col-lg-offset-2 col-lg-10" style="display: block; margin-top: 30px;">
+							<div class="col-lg-offset-2 col-lg-10" style="display: block; margin-top: 30px; margin-bottom: 15px;">
 								<button type="submit" name="btnSimpan" class="btn btn-success">
 									<span class="glyphicon glyphicon-floppy-saved" aria-hidden="true">&nbsp;</span><b>SIMPAN</b>
 								</button>

@@ -243,7 +243,7 @@
 				<div class="form-group">
 					<label for="cmbKategori" class="col-lg-2 control-label">Kategori</label>
 					<div class="col-lg-4" style="display: block; margin-bottom: 10px;">
-						<select name="cmbKategori" data-live-search="true" class="selectpicker form-control" id="cmbKategori" autocomplete="off">
+						<select name="cmbKategori" onchange="javascript:submitform();" data-live-search="true" class="selectpicker form-control" id="cmbKategori" autocomplete="off">
 							<option value=""> Pilih Kategori </option>
 							<?php
 							$daftarSql = "SELECT * FROM kategori  ORDER BY kd_kategori";
@@ -266,15 +266,15 @@
 								<select name="cmbBarang" data-live-search="true" class="selectpicker form-control" autocomplete="off">
 									<option value=""> Pilih Barang </option>
 									<?php
-									$mySql = "SELECT * FROM barang WHERE kd_kategori='$dataKategori' ORDER BY nm_barang ASC";
-									$myQry = mysql_query($mySql, $koneksidb) or die("Gagal Query" . mysql_error());
-									while ($myData = mysql_fetch_array($myQry)) {
-										if ($dataBarang == $myData['kd_barang']) {
+									$daftarSql = "SELECT * FROM barang WHERE kd_kategori='$dataKategori' ORDER BY nm_barang ASC";
+									$daftarQry = mysql_query($daftarSql, $koneksidb) or die("Gagal Query" . mysql_error());
+									while ($daftarData = mysql_fetch_array($daftarQry)) {
+										if ($dataBarang == $daftarData['kd_barang']) {
 											$cek = " selected";
 										} else {
 											$cek = "";
 										}
-										echo "<option value='$myData[kd_barang]' $cek> [ $myData[kd_barang] ] $myData[nm_barang]</option>";
+										echo "<option value='$daftarData[kd_barang]' $cek> [ $daftarData[kd_barang] ] $daftarData[nm_barang]</option>";
 									}
 									?>
 								</select>
